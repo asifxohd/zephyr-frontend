@@ -11,7 +11,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <GoogleOAuthProvider clientId={process.env.VITE_GoogleOAuthProviderClientId}>
     <ToastContainer />
         <App />
-
     </GoogleOAuthProvider>
   </React.StrictMode>
 );

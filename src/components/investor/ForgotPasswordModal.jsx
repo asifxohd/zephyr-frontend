@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { useFormik } from 'formik'; 
-import * as Yup from 'yup'; 
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { sendPasswordResetEmail } from '../../services/api/forgotPassword';
 import { toast } from 'react-toastify';
+import SmallSpinner from '../spinner/SmallSpinner';
+
 
 const ForgotPasswordModal = ({ isOpen, onRequestClose }) => {
+    const [loading, setLoading] = useState(false);
     const validationSchema = Yup.object({
         email: Yup.string()
-            .email('Invalid email address') 
+            .email('Invalid email address')
             .required('Email is required'),
     });
 
@@ -16,15 +19,19 @@ const ForgotPasswordModal = ({ isOpen, onRequestClose }) => {
         initialValues: { email: '' },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
+            setLoading(true);
             console.log("Form submitted with values:", values);
             try {
-                const response = await sendPasswordResetEmail(values.email); 
+                const response = await sendPasswordResetEmail(values.email);
                 console.log("Reset link sent to:", response);
                 toast.success(`Reset link sent successfully to ${values.email}`);
-                onRequestClose(); 
+                onRequestClose();
             } catch (error) {
                 console.error("Error sending reset link:", error);
                 toast.error("Error sending reset link please try again after some time");
+            } finally {
+                setLoading(false);
+                formik.resetForm();
             }
         },
     });
@@ -44,20 +51,20 @@ const ForgotPasswordModal = ({ isOpen, onRequestClose }) => {
                     <input
                         type="email"
                         id="email"
-                        name="email" 
-                        value={formik.values.email} 
-                        onChange={formik.handleChange} 
-                        onBlur={formik.handleBlur} 
+                        name="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         required
+                        placeholder='enter your email address'
                         className={`w-full p-2 border rounded focus:outline-none ${formik.touched.email && formik.errors.email ? 'border-red-500' : 'border-blue-500'} focus:border-blue-700`}
                     />
                     {formik.touched.email && formik.errors.email ? (
                         <div className="text-red-500 text-xs py-1.5 text-center">{formik.errors.email}</div>
                     ) : null}
-                    
+
                     <button type="submit" className="w-full bg-blue-400 text-white p-2 mt-2 rounded hover:bg-blue-700 transition duration-200">
-                        Send Reset Link
-                    </button>
+                        {loading ? <SmallSpinner /> : "Send Reset Link"}                    </button>
                 </form>
                 <button type="button" onClick={onRequestClose} className="mt-4 text-blue-400">Close</button>
             </div>

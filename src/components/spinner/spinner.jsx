@@ -1,7 +1,7 @@
 import React from 'react'
 import './style.css'
 
-const spinner = () => {
+const Spinner = () => {
   return (
     <div class="three-body">
     <div class="three-body__dot"></div>
@@ -11,4 +11,4 @@ const spinner = () => {
   )
 }
 
-export default spinner
+export default Spinner

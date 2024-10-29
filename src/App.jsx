@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Starting from './pages/Common/Starting';
 
+import ChangePassword from './pages/Common/changePassword';
 const BusinessRoutes = lazy(()=> import("./routes/BusinessRoutes"))
 const InvestorRoutes = lazy(()=> import("./routes/InvestorRoutes"))
 const AdminRoutes = lazy(()=> import("./routes/AdminRoutes"))
@@ -12,6 +13,7 @@ function App() {
 			<BrowserRouter>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Routes>
+                        <Route path="change/password/:token/" element={<ChangePassword />} />
                         <Route path="/" element={<Starting />} />
                         <Route path="business/*" element={<BusinessRoutes />} />
                         <Route path="investor/*" element={<InvestorRoutes />} />

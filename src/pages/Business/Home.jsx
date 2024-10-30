@@ -45,7 +45,7 @@ const Home = () => {
     }, [lastScrollY]);
 
     return (
-        <div className="lg:fixed flex flex-col min-h-screen w-full bg-gray-50">
+        <div className="lg:fixed flex flex-col min-h-screen w-full bg-gray-100">
             <Navbar />
             <div className="flex xl:px-20 w-full flex-grow mt-4">
                 <motion.div
@@ -55,12 +55,15 @@ const Home = () => {
                     className="fixed top-0 left-0 right-0 z-50"
                     style={{ pointerEvents: isVisible ? 'auto' : 'none' }} 
                 >
-                    <NavigationMenu activeNav={activeNav} setActiveNav={setActiveNav} />
                 </motion.div>
+                <div className='mt-5'>
+                <NavigationMenu activeNav={activeNav} setActiveNav={setActiveNav} />
+                </div>
                 <div ref={scrollRef} className="w-full p-5 overflow-y-scroll h-screen scrollbar-hide pb-32">
                     <Outlet />
                 </div>
             </div>
+            
         </div>
     );
 };

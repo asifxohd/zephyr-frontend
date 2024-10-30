@@ -9,7 +9,11 @@ import axiosInstance from '../interceptors/interceptors'
  */
 const updateBusinessPreferences = async (data) => {
     try {
-        const response = await axiosInstance.post('api/business-preferences/', data);
+        const response = await axiosInstance.put('api/business-preferences/', data , {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
         return response.data;
     } catch (error) {
         // Throw error if the request fails

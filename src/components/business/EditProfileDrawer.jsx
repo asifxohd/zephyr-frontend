@@ -7,14 +7,18 @@ import { validationSchema } from '../../utils/validations/BusinessProfileValidat
 import { updateBusinessPreferences, fetchBusinessPreferences } from '../../services/api/BusinessProfile';
 import { fetchCombinedData } from '../../services/api/InvestorProfile';
 import Select from 'react-select';
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
+import DocumentForm from './DocumentDrawer';
+import VideoUploadForm from './VideoDrawer';
 
 const EditProfileDrawer = ({ isOpen, onClose }) => {
     const [activeSection, setActiveSection] = useState('basic');
     const [data, setData] = useState({ locations: [], industries: [] });
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState('')
-    const [ userInfo, setUserInfo ] = useState([])
+    const [errors, setError] = useState('')
+    const [userInfo, setUserInfo] = useState([])
+
+    
 
     const formik = useFormik({
         initialValues: {
@@ -33,14 +37,14 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
             facebook: '',
             twitter: '',
             company_description: '',
-            avatar_image: '',
-            cover_image: '',
+            avatar_image: null,
+            cover_image: null,
         },
         validationSchema,
         onSubmit: async (values) => {
-            console.log(values);
-
             const formData = new FormData();
+            console.log(values);
+            
             formData.append('company_name', values.company_name);
             formData.append('industry', values.industry.label);
             formData.append('location', values.location.label);
@@ -60,40 +64,33 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
 
             if (values.avatar_image) {
                 formData.append('avatar_image', values.avatar_image);
+                console.log('avatar_image added to formData:', values.avatar_image);
             }
             if (values.cover_image) {
                 formData.append('cover_image', values.cover_image);
+                console.log('cover_image added to formData:', values.cover_image);
             }
-        
-        
             try {
                 const response = await updateBusinessPreferences(formData);
                 console.log('Update successful:', response);
                 toast.success("Business Profile updated successfully")
+                setError('')
+                onClose()
+
             } catch (error) {
+                setError(error.response?.data)                
                 console.error('Error updating business preferences:', error.response?.data || error.message);
             }
         }
     })
+    const { setFieldValue, handleBlur } = formik;   
+    const handleFileChange = (e, fieldName) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFieldValue(fieldName, file);
+        } 
+    };
 
-    const {setFieldValue } = formik;
-
-    useEffect(() => {
-        const loadData = async () => {
-            setLoading(true);
-            try {
-                const response = await fetchCombinedData();
-                setData(result);
-                console.log(result);
-
-            } catch (error) {
-                setError('Error fetching data');
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadData();
-    }, [])
 
     useEffect(() => {
         const loadData = async () => {
@@ -116,7 +113,6 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
             try {
                 const result = await fetchCombinedData();
                 setData(result);
-                console.log(result);
 
             } catch (error) {
                 setError('Error fetching data');
@@ -127,12 +123,7 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
         loadData();
     }, [])
 
-    const handleFileChange = (event, setFieldValue) => {
-        const file = event.currentTarget.files[0];
-        if (file) {
-            setFieldValue(event.currentTarget.name, file);
-        }
-    };
+    
     
     const locationOptions = data.locations.map((item) => (
         { value: item.id, label: item.name }
@@ -152,8 +143,8 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
         if (userInfo) {
             formik.setValues({
                 company_name: userInfo.company_name || '',
-                industry: {value:userInfo.id, label:userInfo.industry} || null,
-                location: {value:userInfo.id, label:userInfo.location} || null, 
+                industry: { value: userInfo.id, label: userInfo.industry } || null,
+                location: { value: userInfo.id, label: userInfo.location } || null,
                 phone_number: userInfo?.user?.phone_number || '',
                 business_type: userInfo.business_type || '',
                 company_stage: userInfo.company_stage || '',
@@ -166,8 +157,8 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
                 facebook: userInfo.facebook || '',
                 twitter: userInfo.twitter || '',
                 company_description: userInfo.company_description || '',
-                avatar_image: userInfo.avatar_image || '',
-                cover_image: userInfo.cover_image || '',
+                avatar_image: null,
+                cover_image: null,
             });
         }
     }, [userInfo]);
@@ -228,9 +219,10 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
                             <input
                                 type="file"
                                 name="avatar_image"
+                                onBlur={handleBlur}
                                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
-                                onChange={(event) => handleFileChange(event, setAvatarImageName)}
-                                
+                                onChange={(e) => handleFileChange(e, 'avatar_image')}
+
                             />
                             {formik.touched.avatar_image && formik.errors.avatar_image && <div className="text-red-600 text-xs">{formik.errors.avatar_image}</div>}
                         </div>
@@ -243,9 +235,10 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
                             <input
                                 type="file"
                                 name="cover_image"
+                                onBlur={handleBlur}
                                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
-                                onChange={(event) => handleFileChange(event, setCoverImageName)}
-                                />
+                                onChange={(e) => handleFileChange(e, 'cover_image')}
+                            />
                             {formik.touched.cover_image && formik.errors.cover_image && <div className="text-red-600 text-xs">{formik.errors.cover_image}</div>}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -311,6 +304,7 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
                                     onBlur={formik.handleBlur}
                                 />
                                 {formik.touched.phone_number && formik.errors.phone_number && <div className="text-red-600 text-xs">{formik.errors.phone_number}</div>}
+                                {errors && errors.phone_number && <div className="text-red-600 text-xs">{errors.phone_number}</div>}
                             </div>
 
                             <div className="mb-4">
@@ -355,7 +349,6 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
                             </label>
                             <textarea
                                 rows="4"
-                                maxLength={250}
                                 placeholder="Describe your company (250 words or more)"
                                 name="company_description"
                                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
@@ -517,148 +510,8 @@ const EditProfileDrawer = ({ isOpen, onClose }) => {
                     </form>
                 )}
 
-
-
-
-
-
-                {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-
-
-
-
-                {activeSection === 'documents' && (
-                    <form className="space-y-6">
-                        <div className="mb-4">
-                            <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                <HiOutlineDocumentText size={20} className="mr-2" />
-                                Document Title
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Enter document title"
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
-                            />
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                <HiOutlineDocumentText size={20} className="mr-2" />
-                                Document Description
-                            </label>
-                            <textarea
-                                rows="3"
-                                placeholder="Enter document description"
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
-                            />
-                        </div>
-
-                        <div className="relative  border border-black">
-                            <input
-                                type="file"
-                                accept="video/*"
-                                className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                            />
-                            <button
-                                type="button"
-                                className="bg-white-700 text-black border border-blac px-4 py-2 rounded-md hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-                            >
-                                Choose File
-                            </button>
-                            <span className="ml-3 text-sm  text-gray-500">No file chosen</span>
-                        </div>
-
-                        <div className="flex justify-end">
-                            <button
-                                type="submit"
-                                className="bg-black text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-                            >
-                                Save Changes
-                            </button>
-                        </div>
-                    </form>
-                )}
-
-                {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-
-
-
-                {activeSection === 'video' && (
-                    <form className="space-y-6">
-                        {/* Video Title Field */}
-                        <div className="mb-4">
-                            <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                <HiOutlineDocumentText size={20} className="mr-2" />
-                                Video Title
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Enter video title"
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
-                            />
-                        </div>
-
-                        {/* Video Description Field */}
-                        <div className="mb-4">
-                            <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                <HiOutlineDocumentText size={20} className="mr-2" />
-                                Video Description
-                            </label>
-                            <textarea
-                                rows="3"
-                                placeholder="Enter video description"
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
-                            />
-                        </div>
-
-                        {/* Video Upload Field */}
-                        <div className="mb-4">
-                            <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                <HiOutlineDocumentText size={20} className="mr-2" />
-                                Upload Video
-                            </label>
-                            <div className="relative  border border-black">
-                                <input
-                                    type="file"
-                                    accept="video/*"
-                                    className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                                />
-                                <button
-                                    type="button"
-                                    className="bg-white-700 text-black border border-blac px-4 py-2 rounded-md hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-                                >
-                                    Choose File
-                                </button>
-                                <span className="ml-3 text-sm  text-gray-500">No file chosen</span>
-                            </div>
-                        </div>
-
-                        {/* Save Button for Video */}
-                        <div className="flex justify-end">
-                            <button
-                                type="submit"
-                                className="bg-black text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-                            >
-                                Save Changes
-                            </button>
-                        </div>
-                        {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                        {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                        {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                        {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-
-
-                    </form>
-
-
-                )}
-
+                {activeSection === 'documents' && <DocumentForm closeDrawer={onClose} />}
+                {activeSection === 'video' && <VideoUploadForm closeDrawer={onClose}  />}
             </div>
         </motion.div>
     );

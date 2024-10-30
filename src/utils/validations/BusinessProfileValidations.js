@@ -32,5 +32,5 @@ export const validationSchema = Yup.object({
     twitter: Yup.string().url('Must be a valid Twitter URL').required('Twitter profile is required'),
     company_description: Yup.string()
         .required('Company description is required')
-        .min(50, 'Description must be at least 50 characters')
+        .min(100, 'Description must be at least 50 characters')
 });

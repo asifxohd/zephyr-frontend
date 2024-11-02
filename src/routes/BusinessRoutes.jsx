@@ -14,6 +14,7 @@ import Messages from '../pages/Business/Messages';
 import FeedSection from '../pages/Business/FeedSection';
 import ProfileSection from '../pages/Business/ProfileSection';
 
+
 const BusinessRoutes = () => {
     return (
         <Routes>

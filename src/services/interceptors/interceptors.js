@@ -39,6 +39,8 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
+    if ( error.response && error.response.status === 403) {
+    }
     return Promise.reject(error);
   }
 );

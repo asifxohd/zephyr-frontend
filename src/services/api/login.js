@@ -19,6 +19,7 @@ export const submitLoginForm = async (data) => {
         localStorage.setItem('decodedToken', JSON.stringify(decodedToken));
         return response.data;
     } catch (error) {
+        
         throw error;
     }
 }
@@ -52,6 +53,7 @@ export const sendUserData = async (userData) => {
         localStorage.setItem('decodedToken', JSON.stringify(decodedToken));
         return response.data;
     } catch (error) {
+        
         console.error('API request failed:', error);
         throw error;
     }

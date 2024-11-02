@@ -56,7 +56,7 @@ const CompanyProfile = () => {
 	return (
 		<div className="bg-white shadow-lg rounded-lg overflow-hidden w-full mx-auto">
 
-			<div className="py-3  bg-gray-100">
+			{/* <div className="py-3  bg-gray-100">
 				<nav className="flex" aria-label="Breadcrumb">
 					<ol className="inline-flex items-center text-gray-700">
 						<li className="inline-flex items-center">
@@ -70,7 +70,7 @@ const CompanyProfile = () => {
 						</li>
 					</ol>
 				</nav>
-			</div>
+			</div> */}
 
 			{/* Profile Section */}
 			<div className="relative">
@@ -290,7 +290,7 @@ const CompanyProfile = () => {
 
 							<div className="w-full sm:w-1/2">
 								<div className="relative">
-									{userInfo ? (
+									{userInfo && userInfo?.video_pitch?.video_file ? (
 										<VideoPlayer url={BASE_URL + userInfo.video_pitch.video_file} />
 									) :
 										"No video Found"

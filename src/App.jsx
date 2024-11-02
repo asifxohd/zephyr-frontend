@@ -1,17 +1,40 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Starting from './pages/Common/Starting';
-
 import ChangePassword from './pages/Common/changePassword';
-const BusinessRoutes = lazy(()=> import("./routes/BusinessRoutes"))
-const InvestorRoutes = lazy(()=> import("./routes/InvestorRoutes"))
-const AdminRoutes = lazy(()=> import("./routes/AdminRoutes"))
+import axiosInstance from './services/interceptors/interceptors';
+import PermissionRevoked from './components/Alerts/PermissionRevoked';
+
+const BusinessRoutes = lazy(() => import("./routes/BusinessRoutes"));
+const InvestorRoutes = lazy(() => import("./routes/InvestorRoutes"));
+const AdminRoutes = lazy(() => import("./routes/AdminRoutes"));
 
 function App() {
-	return (
-		<>
-			<BrowserRouter>
-                <Suspense fallback={<div>Loading...</div>}>
+    const [showFallback, setShowFallback] = useState(false);
+
+    useEffect(() => {
+        const interceptor = axiosInstance.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.response && error.response.status === 403) {
+                    localStorage.clear()
+                    setShowFallback(true);
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axiosInstance.interceptors.response.eject(interceptor);
+        };
+    }, []);
+
+    return (
+        <BrowserRouter>
+            <Suspense fallback={<div>Loading...</div>}>
+                {showFallback ? (
+                    <PermissionRevoked />
+                ) : (
                     <Routes>
                         <Route path="change/password/:token/" element={<ChangePassword />} />
                         <Route path="/" element={<Starting />} />
@@ -19,10 +42,10 @@ function App() {
                         <Route path="investor/*" element={<InvestorRoutes />} />
                         <Route path="admin/*" element={<AdminRoutes />} />
                     </Routes>
-                </Suspense>
-            </BrowserRouter>
-		</>
-	);
+                )}
+            </Suspense>
+        </BrowserRouter>
+    );
 }
 
 export default App;

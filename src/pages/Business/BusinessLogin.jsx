@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import { validationSchema } from '../../utils/validations/businessLogin';
 import { Link } from 'react-router-dom';
@@ -6,8 +6,10 @@ import {submitLoginForm} from '../../services/api/login'
 import useAuth from '../../hooks/useAuth'
 import {toast} from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
+import ForgotPasswordModal from '@/src/components/investor/ForgotPasswordModal';
 
 const BusinessLogin = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate()
     const formik = useFormik({
         initialValues: {
@@ -37,6 +39,13 @@ const BusinessLogin = () => {
             }
         }
     });
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div className="bg-gray-60 flex flex-row w-full">
@@ -96,12 +105,15 @@ const BusinessLogin = () => {
                                 Sign In
                             </button>
                         </div>
-                        <p className="text-sm">
+                        <div onClick={openModal} className="text-xs text-center text-blue-500 mb-1 cursor-pointer"> <u>forgot password? </u> </div>
+                        <p className="text-sm text-center">
                             Not a member yet? <u><Link to="../register" >Register here</Link></u>
                         </p>
+                        
                     </form>
                 </div>
             </div>
+            <ForgotPasswordModal isOpen={isModalOpen} onRequestClose={closeModal} />
         </div>
     );
 };

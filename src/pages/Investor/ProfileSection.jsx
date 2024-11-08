@@ -72,7 +72,7 @@ const ProfileSection = () => {
 		<div className="mt-1 max-h-[650px] overflow-y-scroll scrollbar-hide pb-20">
 			<section className="relative p-6 bg-white rounded-lg shadow-lg">
 				{!hasFullProfile && (
-					<div className="absolute top-0 left-0 w-full h-full bg-gray-100 bg-opacity-70 flex flex-col items-center justify-center z-20">
+					<div className="absolute top-0 left-0 w-full h-full bg-gray-100 bg-opacity-70 flex flex-col items-center justify-center ">
 						<p className="text-gray-900 text-lg mb-2">Your profile is {completionPercentage}% completed.</p>
 						<p className="text-gray-700 mb-4">Please complete your profile by adding more details.</p>
 

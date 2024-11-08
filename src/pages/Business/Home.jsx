@@ -3,6 +3,8 @@ import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import NavigationMenu from '../../components/business/NavigationMenu';
 import Navbar from '../../components/business/Navbar';
+import useSubscriptionStatus from '@/src/hooks/useSubscriptionStatus';
+import Subscription from './Subscription';
 
 const Home = () => {
     const [activeNav, setActiveNav] = useState('Feed');
@@ -44,6 +46,12 @@ const Home = () => {
         };
     }, [lastScrollY]);
 
+    const { isSubscribed } = useSubscriptionStatus();
+
+    if (!isSubscribed) {
+        return <Subscription />; 
+    }
+
     return (
         <div className="lg:fixed flex flex-col min-h-screen w-full bg-gray-100">
             <Navbar />
@@ -53,17 +61,16 @@ const Home = () => {
                     animate={{ y: isVisible ? 0 : '-0%', opacity: isVisible ? 2 : 0 }}
                     transition={{ duration: 0.6, ease: 'easeInOut' }}
                     className="fixed top-0 left-0 right-0 z-50"
-                    style={{ pointerEvents: isVisible ? 'auto' : 'none' }} 
+                    style={{ pointerEvents: isVisible ? 'auto' : 'none' }}
                 >
                 </motion.div>
                 <div className='mt-5'>
-                <NavigationMenu activeNav={activeNav} setActiveNav={setActiveNav} />
+                    <NavigationMenu activeNav={activeNav} setActiveNav={setActiveNav} />
                 </div>
                 <div ref={scrollRef} className="w-full p-5 overflow-y-scroll h-screen scrollbar-hide pb-32">
                     <Outlet />
                 </div>
             </div>
-            
         </div>
     );
 };

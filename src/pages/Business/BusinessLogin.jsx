@@ -7,10 +7,12 @@ import useAuth from '../../hooks/useAuth'
 import {toast} from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
 import ForgotPasswordModal from '@/src/components/investor/ForgotPasswordModal';
+import useCustomNavigationForAuthenticatedUser from '@/src/hooks/useCustomNavigationForAuthenticatedUser';
 
 const BusinessLogin = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate()
+    useCustomNavigationForAuthenticatedUser();
     const formik = useFormik({
         initialValues: {
             email: '',

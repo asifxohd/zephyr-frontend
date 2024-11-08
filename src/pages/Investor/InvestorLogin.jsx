@@ -9,8 +9,11 @@ import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import { sendUserData } from "../../services/api/login";
 import ForgotPasswordModal from '../../components/investor/ForgotPasswordModal';
+import useCustomNavigationForAuthenticatedUser from '@/src/hooks/useCustomNavigationForAuthenticatedUser';
+
 
 const InvestorLogin = () => {
+    useCustomNavigationForAuthenticatedUser();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const formik = useFormik({

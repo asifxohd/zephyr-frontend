@@ -16,9 +16,9 @@ const Home = () => {
   return (
     <div className="lg:fixed flex flex-col min-h-screen w-full bg-gray-50">
       <Navbar />
-      <div className="flex xl:px-20 w-full flex-grow mt-4">
+      <div className="flex xl:px-12 w-full lg:-z-10 flex-grow mt-4 ">
         <NavigationMenu activeNav={activeNav} setActiveNav={setActiveNav} />
-        <div className="w-full p-5">
+        <div className="w-full  p-5 h-screen overflow-y-scroll">
           <Outlet />
         </div>
       </div>

@@ -13,7 +13,11 @@ import Notifications from '../pages/Business/Notifications';
 import Messages from '../pages/Business/Messages';
 import FeedSection from '../pages/Business/FeedSection';
 import ProfileSection from '../pages/Business/ProfileSection';
-
+import ListedBusiness from '../pages/Business/ListedBusiness';
+import Subscription from '../pages/Business/Subscription';
+import SuccessSubscription from '../pages/Business/SuccessSubscription';
+import FailedSubscription from '../pages/Business/FailedSubscription';
+import ViewSubscriptions from '../pages/Business/ViewSubscriptions';
 
 const BusinessRoutes = () => {
     return (
@@ -22,6 +26,9 @@ const BusinessRoutes = () => {
             <Route path="/login" element={<BusinessLogin />} />
             <Route path="/register" element={<BusinessRegister />} />
             <Route path="/otp-verification" element={<OtpBusiness />} />
+            <Route path="subscriptions" element={<Subscription />} />
+            <Route path="subscriptions/success" element={<SuccessSubscription />} />
+            <Route path="subscriptions/failed" element={<FailedSubscription />} />
 
             {/* Protected Routes */}
             <Route element={<BusinessPrivateRoutes />}>
@@ -34,7 +41,8 @@ const BusinessRoutes = () => {
                     <Route path="notifications" element={<Notifications />} />
                     <Route path="messages" element={<Messages />} />
 					<Route path="profile" element={<ProfileSection />} />
-
+					<Route path="listed-businesses" element={<ListedBusiness />} />
+                    <Route path="view-subscriptions" element={<ViewSubscriptions />} />
                 </Route>
             </Route>
         </Routes>

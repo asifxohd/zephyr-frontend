@@ -45,7 +45,7 @@ const InvestorProfile = () => {
                 <div className="absolute -top-28 left-6">
                     <img
                         src={investorInfo?.investor_preferences?.avatar_image ? investorInfo.investor_preferences.avatar_image : ""}
-                        alt={investorData.full_name}
+                        alt={investorInfo.full_name}
                         className="w-40 h-40 border-4 border-white shadow-lg"
                     />
                 </div>

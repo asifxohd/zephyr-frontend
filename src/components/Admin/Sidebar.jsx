@@ -9,8 +9,9 @@ import {
     IconLogout2,
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { cn } from "./utils.js";
+import LogoutConfirmation from "../Alerts/LogoutConfirmation.jsx";
 
 export function SidebarDemo({ children }) {
     const [data, setData] = useState({
@@ -19,6 +20,22 @@ export function SidebarDemo({ children }) {
         email: 'default@example.com',
     });
     const [open, setOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate()
+    const handleLogoutClick = () => {
+        setIsModalOpen(true); 
+    };
+
+    const handleCloseConfirmation = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleConfirmLogout = () => {
+        console.log("User logged out");
+        localStorage.clear();
+        navigate('/')
+        handleCloseConfirmation(); 
+    };
 
     const links = [
         {
@@ -72,9 +89,7 @@ export function SidebarDemo({ children }) {
                             {links.map((link, idx) => (
                                 <SidebarLink key={idx} link={link} />
                             ))}
-                            <div
-                                className={cn("flex items-center justify-start gap-2  group/sidebar py-2")}
-                            >
+                            <div onClick={handleLogoutClick} className={cn("flex items-center justify-start gap-2  group/sidebar py-2")}>
                                 <IconLogout2 className="text-neutral-700 h-7 w-7 flex-shrink-0" />
                                 <motion.span
                                     animate={{
@@ -111,6 +126,11 @@ export function SidebarDemo({ children }) {
                     {children}
                 </div>
             </div>
+            <LogoutConfirmation 
+                isOpen={isModalOpen} 
+                onClose={handleCloseConfirmation} 
+                onConfirm={handleConfirmLogout}
+            />
         </div>
     );
 }

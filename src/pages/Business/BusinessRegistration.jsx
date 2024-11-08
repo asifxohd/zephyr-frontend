@@ -5,8 +5,11 @@ import { registerValidationSchema } from '../../utils/validations/register';
 import { submitRegisterForm } from '../../services/api/register';
 import { toast } from 'react-toastify';
 import PulseLoader from 'react-spinners/PulseLoader';
+import useCustomNavigationForAuthenticatedUser from '@/src/hooks/useCustomNavigationForAuthenticatedUser';
+
 
 const BusinessRegistration = () => {
+    useCustomNavigationForAuthenticatedUser();
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState([])
     const navigate = useNavigate()
@@ -29,7 +32,7 @@ const BusinessRegistration = () => {
                     phone_number: values.phoneNumber,
                     password: values.password,
                     confirm_password: values.confirmPassword,
-                    role:'business'
+                    role: 'business'
                 });
                 toast.success(response.message)
                 localStorage.setItem('businessEmail', values.email)
@@ -37,12 +40,12 @@ const BusinessRegistration = () => {
 
             } catch (error) {
                 console.log(error);
-                
-                if (error.response.data){
+
+                if (error.response.data) {
                     setError(error.response.data)
                 }
                 toast.error("something went wrong try again after some time")
-            }finally{
+            } finally {
                 setLoading(false)
             }
         }
@@ -154,27 +157,28 @@ const BusinessRegistration = () => {
                         </div>
 
                         <div className="mb-3">
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:bg-gray-600"
                             >
                                 {
-                                    loading ? 
-                                    <PulseLoader
-                                        color="#ffffff" 
-                                        loading={loading}
-                                        size={8} 
-                                        aria-label="Loading Spinner"
-                                        data-testid="loader"
-                                    />
-                                    :
-                                    'Register'
+                                    loading ?
+                                        <PulseLoader
+                                            color="#ffffff"
+                                            loading={loading}
+                                            size={8}
+                                            aria-label="Loading Spinner"
+                                            data-testid="loader"
+                                        />
+                                        :
+                                        'Register'
                                 }
                             </button>
                         </div>
                         <p className="text-sm">Already have an Account? <u><Link to="/business/login">Sign in</Link></u></p>
                     </form>
-                </div>
+                    </div>
+
             </div>
         </div>
     );

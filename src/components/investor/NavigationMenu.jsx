@@ -1,83 +1,164 @@
-import React, { useState } from 'react';
-import { FaBars, FaBuilding, FaComments, FaHeart, FaUsers, FaVideo, FaBell, FaRss } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Card } from '@/components/ui/card';
+import { 
+  Home,
+  Building2,
+  MessageSquare,
+  Heart,
+  Users,
+  Video,
+  Bell,
+  Menu,
+  X,
+  User,
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; 
 
-const NavigationMenu = ({ activeNav, setActiveNav }) => {
-    const [isMinimized, setIsMinimized] = useState(false);
-    const navigate = useNavigate();
-    
-    const handleNavigation = (path, name) => {
-        if (path === 'profile') {
-            setActiveNav(null);  // Clear active navigation state
-        } else {
-            setActiveNav(name);
-        }
-        navigate(path);
+const ModernNavigationMenu = ({ children }) => {
+  const navigate = useNavigate();
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [activeNav, setActiveNav] = useState('home');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth <= 768) {
+        setIsMinimized(true);
+      }
     };
 
-    const toggleSidebar = () => {
-        setIsMinimized(!isMinimized);
-    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-    const navItems = [
-        { name: 'Feed', icon: FaRss, path: '' },
-        { name: 'Businesses', icon: FaBuilding, path: 'businesses' },
-        { name: 'Messages', icon: FaComments, path: 'messages' },
-        { name: 'Favourites', icon: FaHeart, path: 'favourites' },
-        { name: 'Meetings', icon: FaUsers, path: 'meetings' },
-        { name: 'Recordings', icon: FaVideo, path: 'meeting-recordings' },
-        { name: 'Notifications', icon: FaBell, path: 'notifications' },
-    ];
+  const navItems = [
+    { name: 'home', icon: Home, label: 'Home', route: '' },
+    { name: 'business', icon: Building2, label: 'Business', route: 'businesses' },
+    { name: 'investors', icon: User, label: 'Investors', route: 'investors' },
+    { name: 'messages', icon: MessageSquare, label: 'Messages', route: 'messages' },
+    { name: 'favorites', icon: Heart, label: 'Favorites', route: 'favourites' },
+    { name: 'meetings', icon: Users, label: 'Meetings', route: 'meetings' },
+    { name: 'recordings', icon: Video, label: 'Recordings', route: 'meeting-recordings' },
+    { name: 'notifications', icon: Bell, label: 'Notifications', route: 'notifications' },
+  ];
 
-    return (
-        <motion.nav
-            animate={{ width: isMinimized ? '80px' : '300px' }}
-            className="bg-white mt-5 rounded-xl p-4 shadow-lg flex flex-col justify-between h-full"
-        >
-            <div className="flex justify-between items-center">
-                <button onClick={toggleSidebar} className="text-gray-700 hover:text-blue-400 ml-2.5 focus:outline-none">
-                    <FaBars className="text-xl" />
-                </button>
-            </div>
-            <ul className="mt-5 space-y-4">
-                {navItems.map((item) => (
-                    <motion.li
-                        key={item.name}
-                        className={`flex items-center p-3 rounded-full cursor-pointer text-base transition-all ${activeNav === item.name
-                            ? 'bg-blue-400 text-white'
-                            : 'text-gray-700 hover:bg-blue-100 hover:text-blue-400'
-                            } ${isMinimized ? 'justify-center' : 'w-full text-left'}`}
-                        whileHover={{ scale: 1.1 }}
-                        onClick={() => handleNavigation(item.path, item.name)}
-                    >
-                        <item.icon className='text-xl' />
-                        {!isMinimized && <span className="ml-2">{item.name}</span>}
-                    </motion.li>
-                ))}
-            </ul>
+  const handleNavClick = (item) => {
+    setActiveNav(item.name); 
+    navigate(item.route);
+  };
 
-            {/* Profile Card */}
-            <motion.div
-                className={`py-4 rounded-lg cursor-pointer flex items-center ${isMinimized ? 'justify-center' : 'space-x-4'}`}
-                onClick={() => handleNavigation('profile', null)}  // Update to clear activeNav
-                whileHover={{ scale: 1.05 }}
+  const DesktopNav = () => (
+    <div className="mt-5">
+      <Card className={`transition-all duration-300 ease-in-out ${
+        isMinimized ? 'w-20' : 'w-64'
+      } bg-white rounded-3xl relative group shadow-xl mx-6`}>
+        <div className="p-4 flex flex-col">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            {!isMinimized && (
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Menu
+              </span>
+            )}
+            <button
+              onClick={() => setIsMinimized(!isMinimized)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-                <div className="flex items-center justify-center h-12 mt-7">
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5nK9W8-R9Sbwk4m51Bnj96DKlyw3LEBp47oToBHJ3maJEPiOX31kXi66cqLfOiVlnkrU&usqp=CAU"
-                        alt="Profile"
-                        className="rounded-full object-cover w-full h-full"
-                    />
-                </div>
+              {isMinimized ? <Menu size={20} /> : <X size={20} />}
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            {navItems.map((item) => (
+              <button
+                key={item.name}
+                onClick={() => handleNavClick(item)} 
+                className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group ${
+                  activeNav === item.name
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                    : 'hover:bg-gray-100'
+                }`}
+              >
+                <item.icon size={20} className={activeNav === item.name ? 'text-white' : 'text-gray-600'} />
                 {!isMinimized && (
-                    <div>
-                        <p className=" mt-7 font-semibold text-gray-800">Jon Doe</p>
-                    </div>
+                  <span className="ml-3 font-medium">{item.label}</span>
                 )}
-            </motion.div>
-        </motion.nav>
-    );
+              </button>
+            ))}
+          </div>
+
+          {/* Profile Section */}
+          <div className="mt-6 pt-4 border-t">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                <img
+                  src="https://img.freepik.com/free-vector/hand-drawn-side-profile-cartoon-illustration_23-2150517171.jpg"
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {!isMinimized && (
+                <div>
+                  <p className="font-medium">Alex Thompson</p>
+                  <p className="text-sm text-gray-500">Designer</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+
+  const MobileNav = () => (
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg rounded-t-3xl">
+      <div className="max-w-md mx-auto px-6 py-2">
+        <div className="flex justify-around items-center">
+          {navItems.slice(0, 5).map((item) => (
+            <button
+              key={item.name}
+              onClick={() => handleNavClick(item)} // Update click handler
+              className="flex flex-col items-center py-2 px-3 relative"
+            >
+              {activeNav === item.name && (
+                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-blue-500 rounded-full" />
+              )}
+              <item.icon
+                size={24}
+                className={`transition-colors duration-200 ${
+                  activeNav === item.name ? 'text-blue-500' : 'text-gray-500'
+                }`}
+              />
+              <span className={`text-xs mt-1 ${
+                activeNav === item.name ? 'text-blue-500 font-medium' : 'text-gray-500'
+              }`}>
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Navigation */}
+      {!isMobile && (
+        <aside className="sticky top-0">
+          <DesktopNav />
+        </aside>
+      )}
+      
+      {/* Mobile Navigation */}
+      {isMobile && <MobileNav />}
+      
+      {/* Main content area */}
+
+    </div>
+  );
 };
 
-export default NavigationMenu;
+export default ModernNavigationMenu;

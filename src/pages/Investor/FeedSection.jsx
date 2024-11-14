@@ -1,12 +1,11 @@
 import React from 'react'
-import PremiumCard from '@/src/components/investor/PremiumCard'
 import PostSection from '@/src/components/investor/PostSection'
-
+import UsersToFollow from '@/src/components/investor/UsersToFollow'
 const FeedSection = () => {
   return (
-    < div className='overflow-y-scroll flex flex-row' >
-    <PostSection></PostSection>
-    <PremiumCard/>
+    < div className='overflow-y-scroll scrollbar-hide flex flex-row pb-32' >
+    <PostSection/>
+    <UsersToFollow/>
   </div>
   )
 }

@@ -4,9 +4,11 @@ import { FaLinkedin, FaFacebook, FaTwitter, FaTrash } from "react-icons/fa";
 import '../../assets/style.css'
 import EditProfileDrawer from '../../components/business/EditProfileDrawer';
 import { fetchData, deleteDocument } from '../../services/api/business/Profile';
-import { BASE_URL } from '../../constents';
+import { BASE_URL, BASE_URL_IMG } from '../../constents';
 import DeleteConfirmationModal from '../../components/Alerts/DeleteConfirmationModal';
 import VideoPlayer from '../../components/VedioPlayer/VideoPlayer';
+import FollowStats from '@/src/components/Common/FollowStats';
+import { fetchUserConnections } from '@/src/services/api/business/Connections';
 
 
 
@@ -18,8 +20,26 @@ const CompanyProfile = () => {
 	const [refresh, setRefresh] = useState(false);
 	const [isModalOpen, setModalOpen] = useState(false);
 	const [titleData, setTitleData] = useState({ title: '', id: '' })
-
-
+	const [followers, setFollowers] = useState([])
+	const [following, setFollowing] = useState([])
+	
+	useEffect(()=> {
+		const fetchData = async () => {
+			try {
+				const response = await fetchUserConnections();
+				setFollowers(response.followers)
+				setFollowing(response.following)
+				console.log(response);
+				
+			} catch (error) {
+				console.log(error);
+				
+			}
+		}
+		fetchData();
+	}, [])
+	
+	  
 	const openModal = (text, id) => {
 		setModalOpen(true);
 		setTitleData({ title: text, id: id });
@@ -52,7 +72,24 @@ const CompanyProfile = () => {
 		getData();
 	}, [refresh])
 
-
+	function formatNumber(num) {
+		const units = ['', 'Thousand', 'Million', 'Billion', 'Trillion']; // Global system units
+		let order = 0;
+	
+		// Handle numbers greater than or equal to 1000
+		while (num >= 1000 && order < units.length - 1) {
+			order++;
+			num /= 1000;
+		}
+	
+		// If the number has a fractional part, show one decimal place
+		if (num % 1 !== 0) {
+			return `${num.toFixed(1)} ${units[order]}`;
+		}
+	
+		return `${Math.round(num)} ${units[order]}`;
+	}
+		
 	return (
 		<div className="bg-white shadow-lg rounded-lg overflow-hidden w-full mx-auto">
 
@@ -75,13 +112,13 @@ const CompanyProfile = () => {
 			{/* Profile Section */}
 			<div className="relative">
 				<img
-					src={userInfo?.business_preferences?.cover_image ? BASE_URL + userInfo.business_preferences?.cover_image : "https://www.munathara.com/sites/default/files/default_images/default-banner_0.png"}
+					src={userInfo?.business_preferences?.cover_image ? BASE_URL_IMG + userInfo.business_preferences?.cover_image : "https://www.munathara.com/sites/default/files/default_images/default-banner_0.png"}
 					alt="Company Cover"
 					className="w-full h-52 object-cover"
 				/>
 				<div className="absolute top-44 left-10 transform -translate-y-1/2">
 					<img
-						src={userInfo?.business_preferences?.avatar_image ? BASE_URL + userInfo.business_preferences?.avatar_image : "https://www.munathara.com/sites/default/files/default_images/default-banner_0.png"}
+						src={userInfo?.business_preferences?.avatar_image ? BASE_URL_IMG + userInfo.business_preferences?.avatar_image : "https://www.munathara.com/sites/default/files/default_images/default-banner_0.png"}
 						alt="Company Logo"
 						className="w-32 h-32 border-4 border-white"
 					/>
@@ -105,6 +142,9 @@ const CompanyProfile = () => {
 								<strong className="text-gray-800">Mobile:</strong>
 								<a href="tel:+919876543210" className="text-blue-600 hover:underline"> {userInfo.phone_number ? userInfo.phone_number : "mobile number"} </a>
 							</p>
+							<div className='py-1'>
+								<FollowStats followers={followers} following={following} />
+							</div>
 						</div>
 					</div>
 
@@ -191,12 +231,12 @@ const CompanyProfile = () => {
 
 							<div className="flex items-center space-x-2">
 								<strong className=" text-gray-800">Annual Revenue:</strong>
-								<span className="text-gray-600">{userInfo?.business_preferences?.annual_revenue ? userInfo?.business_preferences?.annual_revenue : "N/A"}</span>
+								<span className="text-gray-600">{userInfo?.business_preferences?.annual_revenue ? formatNumber(userInfo?.business_preferences?.annual_revenue) : "N/A"}</span>
 							</div>
 
 							<div className="flex items-center space-x-2">
 								<strong className=" text-gray-800">Seeking Amount:</strong>
-								<span className="text-gray-600">{userInfo?.business_preferences?.seeking_amount ? userInfo?.business_preferences?.seeking_amount : "N/A"}</span>
+								<span className="text-gray-600">{userInfo?.business_preferences?.seeking_amount ?  formatNumber(userInfo?.business_preferences?.seeking_amount) : "N/A"}</span>
 							</div>
 
 							<div className="flex items-center space-x-2">
@@ -251,7 +291,7 @@ const CompanyProfile = () => {
 												{doc.document_description ? `${doc.document_description.substring(0, 180)}...` : ''}
 											</p>
 											<a
-												href={BASE_URL + doc.document_file}
+												href={BASE_URL_IMG + doc.document_file}
 												target="_blank"
 												rel="noopener noreferrer"
 												className="text-blue-400 text-xs cursor-pointer"
@@ -291,7 +331,7 @@ const CompanyProfile = () => {
 							<div className="w-full sm:w-1/2">
 								<div className="relative">
 									{userInfo && userInfo?.video_pitch?.video_file ? (
-										<VideoPlayer url={BASE_URL + userInfo.video_pitch.video_file} />
+										<VideoPlayer url={BASE_URL_IMG + userInfo.video_pitch.video_file} />
 									) :
 										"No video Found"
 									}

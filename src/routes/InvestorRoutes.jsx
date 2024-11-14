@@ -15,7 +15,8 @@ import MeetingRecordingsSection from '../pages/Investor/MeetingRecordingsSection
 import NotificationsSection from '../pages/Investor/NotificationsSection';
 import ProfileSection from '../pages/Investor/ProfileSection';
 import InvestersView from '../pages/Investor/InvestersView';
-
+import ViewBusiness from '../pages/Business/ViewBusiness';
+import ViewInvestorProfile from '../pages/Business/ViewInvestrosProfile';
 
 const InvestorRoutes = () => {
   return (
@@ -28,7 +29,9 @@ const InvestorRoutes = () => {
         <Route path="/" element={<Home />}>
           <Route index element={<FeedSection />} /> 
           <Route path="businesses" element={<BusinessesSection />} />
+          <Route path="businesses/:id" element={<ViewBusiness />} />
           <Route path="investors" element={<InvestersView />} />
+          <Route path="investors/:id" element={<ViewInvestorProfile />} />
           <Route path="messages" element={<MessagesSection />} />
           <Route path="favourites" element={<FavouritesSection />} />
           <Route path="meetings" element={<MeetingsSection />} />

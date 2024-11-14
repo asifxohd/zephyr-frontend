@@ -18,6 +18,8 @@ import Subscription from '../pages/Business/Subscription';
 import SuccessSubscription from '../pages/Business/SuccessSubscription';
 import FailedSubscription from '../pages/Business/FailedSubscription';
 import ViewSubscriptions from '../pages/Business/ViewSubscriptions';
+import ViewBusiness from '../pages/Business/ViewBusiness';
+import ViewInvestorProfile from '../pages/Business/ViewInvestrosProfile';
 
 const BusinessRoutes = () => {
     return (
@@ -35,6 +37,7 @@ const BusinessRoutes = () => {
                 <Route path="/" element={<Home />}>
                     <Route index element={<FeedSection />} />
                     <Route path="investors" element={<ActiveInvestors />} />
+                    <Route path="investors/:id" element={<ViewInvestorProfile />} />
                     <Route path="join-meetings" element={<JoinMeetings />} />
                     <Route path="subscriptions" element={<ManageSubscriptions />} />
                     <Route path="meetings" element={<Meetings />} />
@@ -42,6 +45,7 @@ const BusinessRoutes = () => {
                     <Route path="messages" element={<Messages />} />
 					<Route path="profile" element={<ProfileSection />} />
 					<Route path="listed-businesses" element={<ListedBusiness />} />
+                    <Route path="listed-businesses/:id" element={<ViewBusiness />} />
                     <Route path="view-subscriptions" element={<ViewSubscriptions />} />
                 </Route>
             </Route>

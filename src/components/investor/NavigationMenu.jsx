@@ -41,7 +41,7 @@ const ModernNavigationMenu = ({ children }) => {
     { name: 'favorites', icon: Heart, label: 'Favorites', route: 'favourites' },
     { name: 'meetings', icon: Users, label: 'Meetings', route: 'meetings' },
     { name: 'recordings', icon: Video, label: 'Recordings', route: 'meeting-recordings' },
-    { name: 'notifications', icon: Bell, label: 'Notifications', route: 'notifications' },
+    // { name: 'notifications', icon: Bell, label: 'Notifications', route: 'notifications' },
   ];
 
   const handleNavClick = (item) => {
@@ -51,9 +51,9 @@ const ModernNavigationMenu = ({ children }) => {
 
   const DesktopNav = () => (
     <div className="mt-5">
-      <Card className={`transition-all duration-300 ease-in-out ${
+      <Card className={`transition-all rounded-none duration-300 ease-in-out ${
         isMinimized ? 'w-20' : 'w-64'
-      } bg-white rounded-3xl relative group shadow-xl mx-6`}>
+      } bg-white relative group shadow-xl `}>
         <div className="p-4 flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -77,7 +77,7 @@ const ModernNavigationMenu = ({ children }) => {
                 onClick={() => handleNavClick(item)} 
                 className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group ${
                   activeNav === item.name
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-blue-400 to-purple-300 text-white shadow-lg'
                     : 'hover:bg-gray-100'
                 }`}
               >
@@ -144,7 +144,7 @@ const ModernNavigationMenu = ({ children }) => {
   );
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen ">
       {/* Navigation */}
       {!isMobile && (
         <aside className="sticky top-0">

@@ -3,11 +3,14 @@ import { FaLocationArrow, FaIndustry, FaEdit, FaSignOutAlt } from 'react-icons/f
 import Drawer from '../../components/investor/Drawer';
 import '../../assets/style.css';
 import { fetchUserInfo } from '../../services/api/InvestorProfile';
-import { BASE_URL } from '../../constents';
+import { BASE_URL_IMG } from '../../constents';
 import { FaKey } from 'react-icons/fa'
 import OffcanvasChangePassword from '../../components/investor/OffcanvasChangePassword';
 import ConfirmationModal from '../../components/investor/ConfirmationModal';
 import {useNavigate } from 'react-router-dom'
+import FollowStats from '@/src/components/Common/FollowStats';
+
+import { fetchUserConnections } from '@/src/services/api/business/Connections';
 
 
 const ProfileSection = () => {
@@ -16,7 +19,25 @@ const ProfileSection = () => {
 	const [loading, setLoading] = useState(false);
 	const [isCanvasOpen, setIsCanvasOpen] = useState(false);
 	const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false); 
+	const [followers, setFollowers] = useState([])
+	const [following, setFollowing] = useState([])
 	const navigate = useNavigate()
+	
+	useEffect(()=> {
+		const fetchData = async () => {
+			try {
+				const response = await fetchUserConnections();
+				setFollowers(response.followers)
+				setFollowing(response.following)
+				console.log(response);
+				
+			} catch (error) {
+				console.log(error);
+				
+			}
+		}
+		fetchData();
+	}, [])
 	
 	const loadData = async () => {
 		setLoading(true);
@@ -97,14 +118,14 @@ const ProfileSection = () => {
 
 				)}
 				<img
-					src={BASE_URL + userInfo.investor_preferences?.cover_image}
+					src={BASE_URL_IMG + userInfo.investor_preferences?.cover_image}
 					alt="cover-image"
 					className="w-full absolute top-0 left-0 z-0 h-52 object-cover rounded-t-lg"
 				/>
 				<div className="relative z-10 pt-32">
 					<div className="flex items-center justify-center sm:justify-start mb-3">
 						<img
-							src={BASE_URL + userInfo.investor_preferences?.avatar_image}
+							src={BASE_URL_IMG + userInfo.investor_preferences?.avatar_image}
 							alt="user-avatar-image"
 							className="border-4 border-white rounded-full w-36 h-36 object-cover"
 						/>
@@ -141,6 +162,10 @@ const ProfileSection = () => {
 						</div>
 						<p className="text-blue-600">{userInfo.email}</p>
 						<p className="text-gray-700">+91 {userInfo.phone_number}</p>
+						<div className=''>
+						<FollowStats followers={followers} following={following} />
+						</div>
+
 
 						{hasFullProfile ? (
 							<>

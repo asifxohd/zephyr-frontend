@@ -26,6 +26,8 @@ const ChatPage = () => {
         const fetchUsers = async () => {
             try {
                 const response = await fetchMessagingUsers();
+                console.log(response);
+                
                 setUsers(response);
                 if (response.length > 0) {
                     handleUserSelect(formatUserForDisplay(response[0]));
@@ -38,15 +40,18 @@ const ChatPage = () => {
     }, []);
 
     useEffect(() => {
+        let ws;
         if (selectedUser) {
-            const ws = initializeWebSocket(selectedUser.id, handleIncomingMessage);
-            console.log(ws);
-            
-            
+            ws = initializeWebSocket(selectedUser.id, handleIncomingMessage);
         }
-    }, [selectedUser]); 
+        
+    }, [selectedUser]);
+    
+
+
     const formatUserForDisplay = (user) => {
         return {
+            conversation_id: user.conversation_id,
             id: user.user_id,
             name: user.user_name,
             status: user.status.toLowerCase(),
@@ -70,7 +75,8 @@ const ChatPage = () => {
         setSelectedUser(user);
         try {
             const conversationMessages = await fetchConversationMessages(user.id);
-            console.log("Fetched conversation messages:", conversationMessages);
+            console.log(conversationMessages);
+            
             setMessages(conversationMessages);
         } catch (error) {
             console.error("Error fetching messages:", error);
@@ -78,16 +84,22 @@ const ChatPage = () => {
     };
 
     const handleIncomingMessage = (data) => {
-        if (data.message) {
+        
+        if (data) {
             setMessages((prevMessages) => [
                 ...prevMessages,
                 {
-                    content: data.message,
-                    sender_id: data.sender_id,
-                    timestamp: new Date(data.timestamp),
+                    id: data.id,  // Assuming you receive 'id' from WebSocket
+                    sender: data.sender,  // Mapping 'sender_id' to 'sender'
                     content_type: data.content_type,
+                    content: data.content,
+                    image: data.image || null,  // If no image, set it to null
+                    voice: data.voice || null,  // If no voice, set it to null
+                    status: data.status || null, // Assuming 'status' is included in the data
+                    timestamp: new Date(data.timestamp),  // Convert the timestamp to a JavaScript Date object
                 },
             ]);
+            
         }
 
         if (data.status && data.user_id === currentUser.user_id) {
@@ -96,19 +108,17 @@ const ChatPage = () => {
     };
 
     const handleSendMessage = () => {
-        if (!message.trim() || !selectedUser) return; 
-
+        if (!message.trim() || !selectedUser) return;     
         const newMessage = {
             message: message,
             sender_id: currentUser.user_id,
             receiver_id: selectedUser.id,
             content_type: 'text',
             timestamp: new Date().toISOString(),
+            conversation_id: selectedUser.conversation_id || null,
         };
 
         sendMessage(newMessage);
-
-        setMessages([...messages, { ...newMessage, content: message }]);
         setMessage(''); 
     };
 

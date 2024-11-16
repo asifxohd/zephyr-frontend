@@ -5,10 +5,10 @@ import AdminPrivateRoute from './PrivateRoutes/AdminPrivateRoutes';
 import AdminDashboard from '../pages/Admin/AdminDashboard';
 import Businesses from '../pages/Admin/Businesses';
 import Investors from '../pages/Admin/Investors';
-import ManageSubscriptions from '../pages/Admin/ManageSubscriptions';
 import SalesReport from '../pages/Admin/SalesReport';
 import InvestorProfileView from '../pages/Admin/InvestorProfileView';
 import BusinessProfile from '../pages/Admin/BusinessProfileView';
+import Posts from '../pages/Admin/Posts';
 
 const AdminRoutes = () => {
 	return (
@@ -22,7 +22,7 @@ const AdminRoutes = () => {
                     <Route path="investors/:id" element={<InvestorProfileView/>} />
                     <Route path="businesses" element={<Businesses/>} />
                     <Route path="businesses/:id" element={<BusinessProfile/>} />
-                    <Route path="subscriptions" element={<ManageSubscriptions/>} />
+                    <Route path="posts" element={<Posts/>} />
                 </Route>
             </Routes>
 		</>

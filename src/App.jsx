@@ -4,6 +4,7 @@ import Starting from './pages/Common/Starting';
 import ChangePassword from './pages/Common/changePassword';
 import axiosInstance from './services/interceptors/interceptors';
 import PermissionRevoked from './components/Alerts/PermissionRevoked';
+import GlobalLoader from './components/Suspence/GlobalLoader';
 
 const BusinessRoutes = lazy(() => import("./routes/BusinessRoutes"));
 const InvestorRoutes = lazy(() => import("./routes/InvestorRoutes"));
@@ -31,7 +32,7 @@ function App() {
 
     return (
         <BrowserRouter>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<GlobalLoader/>}>
                 {showFallback ? (
                     <PermissionRevoked />
                 ) : (

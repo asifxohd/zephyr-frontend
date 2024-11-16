@@ -9,7 +9,7 @@ import Home from '../pages/Investor/Home';
 import FeedSection from '../pages/Investor/FeedSection';
 import BusinessesSection from '../pages/Investor/BusinessesSection';
 import MessagesSection from '../pages/Investor/MessagesSection';
-import FavouritesSection from '../pages/Investor/FavouritesSection';
+import FavouritesSection from '../pages/Investor/MyPosts';
 import MeetingsSection from '../pages/Investor/MeetingsSection';
 import MeetingRecordingsSection from '../pages/Investor/MeetingRecordingsSection';
 import NotificationsSection from '../pages/Investor/NotificationsSection';

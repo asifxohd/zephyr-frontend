@@ -24,17 +24,24 @@ const MessagesArea = ({ messages, selectedUser, currentUserId }) => {
     };
 
     const groupedMessages = messages.reduce((acc, message) => {
-        // Ensure timestamp is a valid date
         const messageDate = new Date(message.timestamp);
-        if (isNaN(messageDate)) {
-            console.error("Invalid timestamp:", message.timestamp);
-            return acc; // Skip this message
+    
+        // Check for invalid date, but handle it gracefully without logging errors
+        if (!message.timestamp || isNaN(messageDate.getTime())) {
+            return acc; // Skip the message if the timestamp is invalid or empty
         }
+    
         const messageDateStr = messageDate.toDateString();
-        if (!acc[messageDateStr]) acc[messageDateStr] = [];
+    
+        // Group messages by date string
+        if (!acc[messageDateStr]) {
+            acc[messageDateStr] = [];
+        }
         acc[messageDateStr].push(message);
+    
         return acc;
     }, {});
+    
 
     return (
         <div className="flex-1 scrollbar-hide overflow-y-auto p-6 space-y-4 bg-gray-50 border">

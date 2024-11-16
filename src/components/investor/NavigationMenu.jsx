@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   User,
+  Image
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; 
 
@@ -38,7 +39,7 @@ const ModernNavigationMenu = ({ children }) => {
     { name: 'business', icon: Building2, label: 'Business', route: 'businesses' },
     { name: 'investors', icon: User, label: 'Investors', route: 'investors' },
     { name: 'messages', icon: MessageSquare, label: 'Messages', route: 'messages' },
-    { name: 'favorites', icon: Heart, label: 'Favorites', route: 'favourites' },
+    { name: 'My Posts', icon: Image, label: 'My Posts', route: 'favourites' },
     { name: 'meetings', icon: Users, label: 'Meetings', route: 'meetings' },
     { name: 'recordings', icon: Video, label: 'Recordings', route: 'meeting-recordings' },
     // { name: 'notifications', icon: Bell, label: 'Notifications', route: 'notifications' },

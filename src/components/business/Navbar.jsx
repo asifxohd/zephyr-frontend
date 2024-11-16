@@ -145,7 +145,7 @@ const Navbar = ({ onSearch, theme = "light" }) => {
           >
             <div className="relative">
               <img
-                src="https://people.com/thmb/ELz1O3mn7i2Vm9_BmTGgmZgJ3vU=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/kylie-jenner-1-55f046ed8cd6427fb940228361697f45.jpg"
+                src="https://i.pinimg.com/736x/bc/6f/f5/bc6ff5e03b3f23f47a8d0e78749705b0.jpg"
                 alt="Profile"
                 className="w-10 h-10 rounded-xl object-cover ring-2 ring-offset-2 ring-gray-200 group-hover:ring-gray-300 transition-all duration-200"
               />

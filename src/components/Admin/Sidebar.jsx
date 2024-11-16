@@ -67,8 +67,8 @@ export function SidebarDemo({ children }) {
             ),
         },
         {
-            label: "Manage Subscriptions",
-            href: "subscriptions",
+            label: "posts",
+            href: "posts",
             icon: (
                 <IconSubscript className="text-neutral-700 h-7 w-7 flex-shrink-0" />
             ),

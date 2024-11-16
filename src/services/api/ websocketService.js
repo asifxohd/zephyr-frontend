@@ -26,15 +26,17 @@ export const initializeWebSocket = (userId, onMessageCallback) => {
 
     // WebSocket message event handler
     socket.onmessage = (event) => {
+        console.log(event);
+        
         try {
             const data = JSON.parse(event.data);
             if (data) {
-                if (data.message) {
-                    console.log('Received message:', data.message);
-                    onMessageCallback(data); // Call the provided callback when a message is received
+                if (data) {
+                    console.log('Received message:', data);
+                    onMessageCallback(data); 
                 }
                 if (data.status) {
-                    // Handle user status changes (online/offline)
+                    
                     console.log(`User status changed: ${data.status}`);
                 }
             } else {

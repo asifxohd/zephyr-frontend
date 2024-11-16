@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { IoMdArrowDropright } from "react-icons/io";
 import { FaLinkedin, FaFacebook, FaTwitter, FaTrash } from "react-icons/fa";
 import '../../assets/style.css'
 import EditProfileDrawer from '../../components/business/EditProfileDrawer';
 import { fetchData, deleteDocument } from '../../services/api/business/Profile';
-import { BASE_URL, BASE_URL_IMG } from '../../constents';
+import { BASE_URL_IMG } from '../../constents';
 import DeleteConfirmationModal from '../../components/Alerts/DeleteConfirmationModal';
 import VideoPlayer from '../../components/VedioPlayer/VideoPlayer';
 import FollowStats from '@/src/components/Common/FollowStats';
 import { fetchUserConnections } from '@/src/services/api/business/Connections';
-
-
+import PostDisplay from '@/src/components/Common/MyPosts';
+import { getPersonalPosts } from '@/src/services/api/feed';
 
 const CompanyProfile = () => {
 	const [userInfo, setUserInfo] = useState([])
@@ -22,14 +21,16 @@ const CompanyProfile = () => {
 	const [titleData, setTitleData] = useState({ title: '', id: '' })
 	const [followers, setFollowers] = useState([])
 	const [following, setFollowing] = useState([])
-	
+	const [posts, setPosts] = useState([])
+
+
+
 	useEffect(()=> {
 		const fetchData = async () => {
 			try {
 				const response = await fetchUserConnections();
 				setFollowers(response.followers)
 				setFollowing(response.following)
-				console.log(response);
 				
 			} catch (error) {
 				console.log(error);
@@ -61,7 +62,6 @@ const CompanyProfile = () => {
 		const getData = async () => {
 			try {
 				const response = await fetchData()
-				console.log(response);
 				setUserInfo(response)
 				setDocuments(response.documents || [])
 			} catch (error) {
@@ -72,17 +72,30 @@ const CompanyProfile = () => {
 		getData();
 	}, [refresh])
 
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await getPersonalPosts()
+				setPosts(response)
+			} catch (error) {
+				console.log(error);
+
+			}
+		}
+		fetchData();
+	}, [refresh])
+
+
+
 	function formatNumber(num) {
-		const units = ['', 'Thousand', 'Million', 'Billion', 'Trillion']; // Global system units
+		const units = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
 		let order = 0;
 	
-		// Handle numbers greater than or equal to 1000
 		while (num >= 1000 && order < units.length - 1) {
 			order++;
 			num /= 1000;
 		}
 	
-		// If the number has a fractional part, show one decimal place
 		if (num % 1 !== 0) {
 			return `${num.toFixed(1)} ${units[order]}`;
 		}
@@ -90,6 +103,44 @@ const CompanyProfile = () => {
 		return `${Math.round(num)} ${units[order]}`;
 	}
 		
+
+	const handleEdit = ()=> {
+		setRefresh(!refresh);
+	}
+	const handleDelete = (postId)=> {
+		setPosts(posts.filter(post => post.id !== postId));
+
+	}
+	// const posts = [
+	// 	{
+	// 	  id: 1,
+	// 	  imageUrl: "https://imgs.search.brave.com/87VwAsXeqi0mW7iVDdl1ldiZmR11lhcQk_2FsN4_y8A/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1waG90by95/b3VuZy1iZWF1dGlm/dWwtc21pbGluZy13/b21hbi1sb29raW5n/LXRyZW5keS1naXJs/LWNhc3VhbC1zdW1t/ZXItaG9vZGllLXNr/aXJ0LWNsb3RoZXMt/c2hvd3MtdG9uZ3Vl/XzE1ODUzOC0xNDE0/LmpwZz9zZW10PWFp/c19oeWJyaWQ", // Dummy image URL
+	// 	  title: "Beautiful Sunset",
+	// 	  caption: "Captured this amazing sunset during my vacation.",
+	// 	  location: "Malibu Beach, California",
+	// 	  time: "2 hours ago",
+	// 	  likes: 120,
+	// 	  comments: [
+	// 		{ author: "John Doe", text: "Wow! This looks amazing!" },
+	// 		{ author: "Jane Smith", text: "I wish I was there!" },
+	// 	  ],
+	// 	},
+	// 	{
+	// 	  id: 2,
+	// 	  imageUrl: "https://imgs.search.brave.com/87VwAsXeqi0mW7iVDdl1ldiZmR11lhcQk_2FsN4_y8A/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1waG90by95/b3VuZy1iZWF1dGlm/dWwtc21pbGluZy13/b21hbi1sb29raW5n/LXRyZW5keS1naXJs/LWNhc3VhbC1zdW1t/ZXItaG9vZGllLXNr/aXJ0LWNsb3RoZXMt/c2hvd3MtdG9uZ3Vl/XzE1ODUzOC0xNDE0/LmpwZz9zZW10PWFp/c19oeWJyaWQ", // Dummy image URL
+	// 	  title: "Mountain Hike",
+	// 	  caption: "The view from the top was breathtaking.",
+	// 	  location: "Rocky Mountains, Colorado",
+	// 	  time: "5 hours ago",
+	// 	  likes: 98,
+	// 	  comments: [
+	// 		{ author: "Alice Brown", text: "Absolutely stunning!" },
+	// 		{ author: "Bob Green", text: "How long was the hike?" },
+	// 	  ],
+	// 	},
+		
+	//   ];
+	  
 	return (
 		<div className="bg-white shadow-lg rounded-lg overflow-hidden w-full mx-auto">
 
@@ -162,26 +213,37 @@ const CompanyProfile = () => {
 				</div>
 
 				{/* Tab Navigation */}
-				<div className="border-t space-x-5 flex pl-5 pt-4 text-gray-700">
+				<div className="border-t space-x-2 flex flex-wrap pl-5 pt-4 text-gray-700">
 					<h3
 						onClick={() => setActiveTab('About')}
-						className={`text-base font-semibold py-1 px-4 cursor-pointer ${activeTab === 'About' ? 'text-white bg-black rounded-2xl' : 'text-gray-500'}`}
+						className={`text-xs font-semibold py-1 px-4 cursor-pointer ${activeTab === 'About' ? 'text-white bg-black rounded-2xl' : 'text-gray-500'} 
+						sm:px-3 sm:py-2 md:px-4 md:py-1`}
 					>
 						About
 					</h3>
 					<h3
 						onClick={() => setActiveTab('Documents')}
-						className={`text-base font-semibold px-4 py-1 cursor-pointer ${activeTab === 'Documents' ? 'text-white bg-black rounded-2xl' : 'text-gray-500'}`}
+						className={`text-xs font-semibold px-4 py-1 cursor-pointer ${activeTab === 'Documents' ? 'text-white bg-black rounded-2xl' : 'text-gray-500'}
+						sm:px-3 sm:py-2 md:px-4 md:py-1`}
 					>
 						Documents
 					</h3>
 					<h3
 						onClick={() => setActiveTab('Video Pitch')}
-						className={`text-base font-semibold px-4 py-1 cursor-pointer ${activeTab === 'Video Pitch' ? 'text-white bg-black rounded-2xl' : 'text-gray-500'}`}
+						className={`text-xs font-semibold px-4 py-1 cursor-pointer ${activeTab === 'Video Pitch' ? 'text-white bg-black rounded-2xl' : 'text-gray-500'}
+						sm:px-3 sm:py-2 md:px-4 md:py-1`}
 					>
 						Video Pitch
 					</h3>
-				</div>
+					<h3
+						onClick={() => setActiveTab('My Posts')}
+						className={`text-xs font-semibold px-4 py-1 cursor-pointer ${activeTab === 'My Posts' ? 'text-white bg-black rounded-2xl' : 'text-gray-500'}
+						sm:px-3 sm:py-2 md:px-4 md:py-1`}
+					>
+						My Posts
+					</h3>
+					</div>
+
 
 				{/* Tab Content */}
 				{activeTab === 'About' && (
@@ -348,6 +410,15 @@ const CompanyProfile = () => {
 
 					</div>
 				)}
+
+			<div className='pt-5 grid md:grid-cols-2 px-12'>
+			{activeTab === 'My Posts' && 
+			posts.map((post) => (
+				<PostDisplay key={post.id} post={post} onEdit={handleEdit} onDelete={() => handleDelete(post.id)} />
+			))
+			}
+			</div>
+
 			</div>
 
 			<EditProfileDrawer

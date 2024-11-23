@@ -41,14 +41,7 @@ const UsersToFollow = () => {
 
 
 	const handleNavigateToProfile = (user) => {
-		if (user.role == 'investor'){
-
-		}else if (user.role == 'business'){
-
-		}else{
-
-		}
-		
+		navigate(`user/profile/${user.id}`);
 	};
 
 	return (

@@ -20,6 +20,8 @@ import FailedSubscription from '../pages/Business/FailedSubscription';
 import ViewSubscriptions from '../pages/Business/ViewSubscriptions';
 import ViewBusiness from '../pages/Business/ViewBusiness';
 import ViewInvestorProfile from '../pages/Business/ViewInvestrosProfile';
+import UserProfile from '../pages/Common/UserProfile';
+import ScheduleMeetings from '../components/Common/ScheduleMeetings';
 
 const BusinessRoutes = () => {
     return (
@@ -47,6 +49,8 @@ const BusinessRoutes = () => {
 					<Route path="listed-businesses" element={<ListedBusiness />} />
                     <Route path="listed-businesses/:id" element={<ViewBusiness />} />
                     <Route path="view-subscriptions" element={<ViewSubscriptions />} />
+                    <Route path="user/profile/:id" element={<UserProfile />} />
+                    <Route path="schedule-meetings" element={<ScheduleMeetings />} />
                 </Route>
             </Route>
         </Routes>

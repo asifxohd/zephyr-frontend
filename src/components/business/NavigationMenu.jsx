@@ -63,6 +63,7 @@ const navigate = useNavigate()
       id: "schedule",
       name: "Schedule",
       icon: Calendar,
+      link:'schedule-meetings',
       notifications: 2,
       description: "Meetings & events",
     },

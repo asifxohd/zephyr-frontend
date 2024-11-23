@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Mail, Phone, MapPin, Linkedin, Facebook, Twitter, Globe } from 'lucide-react';
 import { getIndividualBusinessInfo } from '@/src/services/api/admin/businessInfoapis';
 import { useParams } from 'react-router-dom';
-import { BASE_URL } from '@/src/constents';
+import { BASE_URL_IMG } from '@/src/constents';
 
 const BusinessProfile = () => {
   const [businessData, setBusinessData] = useState(null);
@@ -34,7 +34,7 @@ const BusinessProfile = () => {
         {/* Cover Image */}
         <div className="relative h-48 md:h-48 lg:h-56 w-full bg-blue-900">
           <img
-            src={BASE_URL + prefs?.cover_image || "Not given"}
+            src={BASE_URL_IMG + prefs?.cover_image || "Not given"}
             alt="Cover"
             className="w-full h-full object-cover opacity-80"
           />
@@ -47,7 +47,7 @@ const BusinessProfile = () => {
           <div className="relative -mt-32 sm:-mt-16 mb-6">
             <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 pt-4">
               <img
-                src={BASE_URL + prefs?.avatar_image || "Not given"}
+                src={BASE_URL_IMG + prefs?.avatar_image || "Not given"}
                 alt="Company Logo"
                 className="w-32 h-32 rounded-lg border-4 border-white shadow-xl bg-white"
               />
@@ -96,7 +96,7 @@ const BusinessProfile = () => {
                           <p className="text-gray-500 text-sm mt-1">{doc.document_description || "Not given"}</p>
                           {/* Open Document button */}
                           <button
-                            onClick={() => window.open(BASE_URL + doc.document_file, "_blank")}
+                            onClick={() => window.open(BASE_URL_IMG + doc.document_file, "_blank")}
                             className="mt-2 text-blue-500 underline text-sm"
                           >
                             Open Document
@@ -121,7 +121,7 @@ const BusinessProfile = () => {
                   {/* Video tag */}
                   {video?.video_file ? (
                     <video controls autoPlay className="mt-2 w-full h-auto rounded-lg">
-                      <source src={BASE_URL + video?.video_file} type="video/mp4" />
+                      <source src={BASE_URL_IMG + video?.video_file} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
                   ) : (

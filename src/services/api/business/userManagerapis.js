@@ -18,3 +18,13 @@ export const fetchBuseinessUserInfomationForClient = async (page=1)=> {
         throw error
     }
 }
+
+export const fetchUserRole = async (id)=> {
+    try {
+       const response=  await axiosInstance.get(`api/fetch-user-role/${id}`)
+       return response.data
+    } catch (error) {
+        throw error
+    }
+}
+

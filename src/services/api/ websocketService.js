@@ -1,24 +1,23 @@
-import { BASE_URL } from "@/src/constents";
+import { BASE_URL, BASE_URL_WEB_SOCKET } from "@/src/constents";
 
 let socket = null;
 
 export const initializeWebSocket = (userId, onMessageCallback) => {
-    // Check if socket already exists and is open
     if (socket && socket.readyState === WebSocket.OPEN) {
         console.log('WebSocket is already open, skipping re-connection');
-        return socket; // If WebSocket is already open, just return it
+        return socket; 
     }
 
-    // If socket exists, close it before initializing a new connection
     if (socket) {
         console.log('Closing existing WebSocket connection');
         socket.close();
     }
 
-    // Initialize a new WebSocket connection
     console.log(`Initializing WebSocket connection for user: ${userId}`);
-    socket = new WebSocket(BASE_URL + `ws/chat/${userId}/`);
-
+    socket = new WebSocket(`${BASE_URL_WEB_SOCKET}/ws/chat/${userId}/`);
+    console.log(`${BASE_URL_WEB_SOCKET}/ws/chat/${userId}/`);
+    console.log(socket);
+    
     // WebSocket open event handler
     socket.onopen = () => {
         console.log('WebSocket connection established');
@@ -64,6 +63,8 @@ export const initializeWebSocket = (userId, onMessageCallback) => {
 };
 
 export const sendMessage = (message) => {
+    console.log(socket);
+    
     if (socket) {
         if (socket.readyState === WebSocket.OPEN) {
             console.log('Sending message:', message);

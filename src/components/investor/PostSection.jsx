@@ -21,6 +21,9 @@ import { getPosts, sendCommentToServer, toggleLikePost } from '@/src/services/ap
 import { BASE_URL_IMG } from '@/src/constents';
 import { getCommentsOfThePost } from '@/src/services/api/feed';
 import useCurrentUser from '@/src/hooks/useCurrentUser';
+import { useNavigate } from 'react-router-dom';
+import Spinner from '../spinner/Spinner';
+import RefereshSpinner from '../Other/ReloadSpinner';
 
 const NoPosts = () => (
     <Card className="border-0 rounded-sm transition-all duration-300 overflow-hidden bg-white">
@@ -42,7 +45,6 @@ const NoPosts = () => (
 );
 
 const AdvancedPostCard = () => {
-    const [isLiked, setIsLiked] = useState(false);
     const [comments, setComments] = useState([]);
     const [showComments, setShowComments] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,6 +54,8 @@ const AdvancedPostCard = () => {
     const [com, setCom] = useState('')
     const authUser = useCurrentUser()
 
+    const navigate = useNavigate()
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -151,12 +155,18 @@ const AdvancedPostCard = () => {
             setCom('')
         }
     }
+    const handleNavigateToProfile = (user) => {
 
+		navigate(`user/profile/${user}`);
+	};
 
 
     return (
         <div className="w-full max-w-2xl mx-auto space-y-2">
             {/* Create Post Section */}
+            <div className='flex justify-center'>
+                <div className=""><RefereshSpinner setter={setPosts} /></div>
+            </div>
             <Card className="bg-white rounded-sm border-0 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="p-4 md:p-6">
                     <div className="flex items-center gap-4">
@@ -238,8 +248,8 @@ const AdvancedPostCard = () => {
                                     <AvatarFallback>{post.user.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="font-semibold text-gray-900">{post.user.name}</h3>
+                                    <div className="flex cursor-pointer items-center gap-2">
+                                        <h3 onClick={()=> handleNavigateToProfile(post?.user?.id)} className="font-semibold text-gray-900">{post.user.name}</h3>
                                     </div>
                                     <div className="flex items-center gap-2 text-sm text-gray-500">
                                         <span>{formatDate(post.created_at)}</span>

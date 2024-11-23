@@ -78,7 +78,7 @@ export function SidebarDemo({ children }) {
     return (
         <div
             className={cn(
-                "rounded-md flex flex-col md:flex-row bg-gray-100 w-full flex-1 mx-auto border border-neutral-200 overflow-hidden",
+                "rounded-md flex flex-col  md:flex-row bg-gray-100 w-full flex-1 mx-auto border border-neutral-200 overflow-hidden",
                 "h-screen"
             )}>
             <Sidebar open={open} setOpen={setOpen}>

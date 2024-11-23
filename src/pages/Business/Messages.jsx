@@ -18,6 +18,7 @@ const ChatPage = () => {
     const [messages, setMessages] = useState([]);
     const [isRecording, setIsRecording] = useState(false);
     const currentUser = useCurrentUser();
+    const [webSocket, setWebSocket] = useState(null); 
 
     const DEFAULT_AVATAR = "https://ui-avatars.com/api/?background=random&name=";
     const messagesEndRef = useRef(null);
@@ -43,6 +44,7 @@ const ChatPage = () => {
         let ws;
         if (selectedUser) {
             ws = initializeWebSocket(selectedUser.id, handleIncomingMessage);
+            setWebSocket(ws)
         }
         
     }, [selectedUser]);
@@ -89,11 +91,11 @@ const ChatPage = () => {
             setMessages((prevMessages) => [
                 ...prevMessages,
                 {
-                    id: data.id,  // Assuming you receive 'id' from WebSocket
-                    sender: data.sender,  // Mapping 'sender_id' to 'sender'
+                    id: data.id, 
+                    sender: data.sender,  
                     content_type: data.content_type,
                     content: data.content,
-                    image: data.image || null,  // If no image, set it to null
+                    image: data.image || null,
                     voice: data.voice || null,  // If no voice, set it to null
                     status: data.status || null, // Assuming 'status' is included in the data
                     timestamp: new Date(data.timestamp),  // Convert the timestamp to a JavaScript Date object

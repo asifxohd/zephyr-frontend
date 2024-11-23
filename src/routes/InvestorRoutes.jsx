@@ -17,6 +17,7 @@ import ProfileSection from '../pages/Investor/ProfileSection';
 import InvestersView from '../pages/Investor/InvestersView';
 import ViewBusiness from '../pages/Business/ViewBusiness';
 import ViewInvestorProfile from '../pages/Business/ViewInvestrosProfile';
+import UserProfile from '../pages/Common/UserProfile';
 
 const InvestorRoutes = () => {
   return (
@@ -38,6 +39,7 @@ const InvestorRoutes = () => {
           <Route path="meeting-recordings" element={<MeetingRecordingsSection />} />
           <Route path="notifications" element={<NotificationsSection />} />
           <Route path="profile" element={<ProfileSection />} />
+          <Route path="user/profile/:id" element={<UserProfile />} />
         </Route>
       </Route>
 

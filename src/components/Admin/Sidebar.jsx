@@ -15,8 +15,8 @@ import LogoutConfirmation from "../Alerts/LogoutConfirmation.jsx";
 
 export function SidebarDemo({ children }) {
     const [data, setData] = useState({
-        profileImage: 'https://assets.aceternity.com/default-avatar.png',
-        username: 'Default Username',
+        profileImage: 'https://as1.ftcdn.net/v2/jpg/01/12/09/12/1000_F_112091233_xghsriqmHzk4sq71lWBL4q0e7n9QJKX6.jpg',
+        username: 'Admin',
         email: 'default@example.com',
     });
     const [open, setOpen] = useState(false);

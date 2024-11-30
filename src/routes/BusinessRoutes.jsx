@@ -22,6 +22,7 @@ import ViewBusiness from '../pages/Business/ViewBusiness';
 import ViewInvestorProfile from '../pages/Business/ViewInvestrosProfile';
 import UserProfile from '../pages/Common/UserProfile';
 import ScheduleMeetings from '../components/Common/ScheduleMeetings';
+import { UserProvider } from '../components/Common/UserContext';
 
 const BusinessRoutes = () => {
     return (

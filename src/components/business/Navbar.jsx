@@ -1,12 +1,50 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutConfirmation from "../Alerts/LogoutConfirmation";
+import useCurrentUser from "@/src/hooks/useCurrentUser";
+import { BASE_URL_IMG, BASE_URL_WEB_SOCKET } from "@/src/constents";
+import { UserContext } from "../Common/UserContext";
+
 
 const Navbar = ({ onSearch, theme = "light" }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const user = useCurrentUser()
+  const userId = user.user_id
+  const { userInformations, loading } = useContext(UserContext);
+
+  useEffect(() => {
+    console.log(`Connecting to WebSocket with userId: ${userId}`);
+    const socket = new WebSocket(`${BASE_URL_WEB_SOCKET}/ws/notifications/${userId}/`);
+
+    socket.onopen = () => {
+        console.log('WebSocket connection established');
+    };
+
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("Notification received:", data);
+        // Add your notification display logic here
+        // For example:
+        // toast.success(data.message);
+    };
+
+    socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+    };
+
+    socket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    return () => {
+        console.log('Cleaning up WebSocket connection');
+        socket.close();
+    };
+}, [userId]);
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -145,7 +183,7 @@ const Navbar = ({ onSearch, theme = "light" }) => {
           >
             <div className="relative">
               <img
-                src="https://i.pinimg.com/736x/bc/6f/f5/bc6ff5e03b3f23f47a8d0e78749705b0.jpg"
+                src={userInformations.avatar_image ? BASE_URL_IMG+userInformations?.avatar_image : "https://i.pinimg.com/736x/bc/6f/f5/bc6ff5e03b3f23f47a8d0e78749705b0.jpg"}
                 alt="Profile"
                 className="w-10 h-10 rounded-xl object-cover ring-2 ring-offset-2 ring-gray-200 group-hover:ring-gray-300 transition-all duration-200"
               />

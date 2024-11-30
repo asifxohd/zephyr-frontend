@@ -5,6 +5,8 @@ import ChangePassword from './pages/Common/changePassword';
 import axiosInstance from './services/interceptors/interceptors';
 import PermissionRevoked from './components/Alerts/PermissionRevoked';
 import GlobalLoader from './components/Suspence/GlobalLoader';
+import { UserProvider } from './components/Common/UserContext';
+
 
 const BusinessRoutes = lazy(() => import("./routes/BusinessRoutes"));
 const InvestorRoutes = lazy(() => import("./routes/InvestorRoutes"));

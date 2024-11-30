@@ -1,75 +1,98 @@
-import * as React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 
+// Function to generate a random ID
+const randomID = (len = 5) => {
+  const chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP';
+  return Array(len)
+    .fill(null)
+    .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
+    .join('');
+};
 
-function randomID(len) {
-  let result = '';
-  if (result) return result;
-  var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
-    maxPos = chars.length,
-    i;
-  len = len || 5;
-  for (i = 0; i < len; i++) {
-    result += chars.charAt(Math.floor(Math.random() * maxPos));
-  }
-  return result;
-}
-
-export function getUrlParams(
-  url = window.location.href
-) {
-  let urlStr = url.split('?')[1];
+// Function to get URL parameters
+const getUrlParams = (url = window.location.href) => {
+  const urlStr = url.split('?')[1];
   return new URLSearchParams(urlStr);
-}
+};
 
-export default function App() {
-      const roomID = getUrlParams().get('roomID') || randomID(5);
-      let myMeeting = async (element) => {
-      const appID = 608944670;
-      const serverSecret = "d5a596daf3cabcc8a74b1575c8311208";
-      const kitToken =  ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID,  randomID(5),  randomID(5));
-      const zp = ZegoUIKitPrebuilt.create(kitToken);
-      
-      zp.joinRoom({
-        container: element,
-        sharedLinks: [
-          {
-            name: 'Copy link',
-            url:
-             window.location.protocol + '//' + 
-             window.location.host + window.location.pathname +
-              '?roomID=' +
-              roomID,
+const ScheduleMeetings = () => {
+  const myMeeting = useRef(null);
+  const zegoInstance = useRef(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    // Cleanup function to handle component unmount
+    return () => {
+      if (zegoInstance.current) {
+        zegoInstance.current.destroy();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const initializeZegoCloud = async () => {
+      if (isInitialized || !myMeeting.current) return;
+
+      try {
+        const roomID = getUrlParams().get('roomID') || randomID(5);
+        const appID = 608944670;
+        const serverSecret = "d5a596daf3cabcc8a74b1575c8311208";
+        
+        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+          appID,
+          serverSecret,
+          roomID,
+          randomID(5),  // userID
+          randomID(5)   // userName
+        );
+
+        zegoInstance.current = ZegoUIKitPrebuilt.create(kitToken);
+
+        await zegoInstance.current.joinRoom({
+          container: myMeeting.current,
+          sharedLinks: [
+            {
+              name: 'Copy link',
+              url: `${window.location.protocol}//${window.location.host}${window.location.pathname}?roomID=${roomID}`,
+            },
+          ],
+          scenario: {
+            mode: ZegoUIKitPrebuilt.GroupCall,
           },
-        ],
-        scenario: {
-          mode: ZegoUIKitPrebuilt.GroupCall, 
-        },
-      });
+          showPreJoinView: true,  // Add this to prevent automatic joining
+        });
 
-    
-  };
+        setIsInitialized(true);
+      } catch (error) {
+        console.error('Failed to initialize ZEGO Cloud:', error);
+      }
+    };
+
+    initializeZegoCloud();
+  }, [isInitialized]);
 
   return (
-   <div
-  className="myCallContainer"
-  ref={myMeeting}
-  style={{
-    width: '90vw',            // 90% of the viewport width
-    height: '79vh',           // 10% of the viewport height
-    maxWidth: '100%',         // Ensure it doesn't exceed 100% width on smaller screens
-    maxHeight: '100vh',       // Prevent overflow on height in case of small screens
-    margin: '0 auto',         // Center horizontally
-    padding: '10px',          // Padding for spacing inside
-    borderRadius: '8px',      // Rounded corners for a modern look
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)', // Soft shadow for depth
-    backgroundColor: '#ffffff', // White background for clarity
-    display: 'flex',           // Flexbox for future content alignment
-    justifyContent: 'center',  // Center content horizontally within the container
-    alignItems: 'center',      // Center content vertically within the container
-    overflow: 'hidden',        // Prevent overflow if content exceeds bounds
-  }}
-></div>
-
+    <div
+      className="myCallContainer"
+      ref={myMeeting}
+      style={{
+        width: '90vw',
+        height: '79vh',
+        maxWidth: '100%',
+        maxHeight: '100vh',
+        margin: '0 auto',
+        padding: '10px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#ffffff',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+      }}
+    />
   );
-}
+};
+
+export default ScheduleMeetings;

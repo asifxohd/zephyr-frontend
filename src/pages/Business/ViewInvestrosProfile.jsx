@@ -106,7 +106,7 @@ const ViewInvestorProfile = () => {
                 {/* Avatar */}
                 <div className="absolute -top-16 sm:-top-20 md:-top-28 left-4 sm:left-6 md:left-10">
                     <img
-                        src={investorInfo?.investor_preferences?.avatar_image || ""}
+                        src={investorInfo?.investor_preferences?.avatar_image || "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
                         alt={investorInfo.full_name}
                         className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 border-4 border-white shadow-lg rounded-full object-cover"
                     />

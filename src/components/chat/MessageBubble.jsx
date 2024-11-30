@@ -1,9 +1,10 @@
 import React from 'react';
 import { format } from 'date-fns';
 import MessageStatus from './MessageStatus';
+import VoicePlayer from './VoicePlayer';
+import { BASE_URL, BASE_URL_IMG } from '@/src/constents';
 
 const MessageBubble = ({ message, selectedUser, currentUserId }) => {
-
     const isSentByCurrentUser = message.sender === currentUserId;
     const formattedTime = format(new Date(message.timestamp), 'p');
     
@@ -13,7 +14,7 @@ const MessageBubble = ({ message, selectedUser, currentUserId }) => {
         switch (message.content_type) {
             case 'text':
                 return (
-                    <p className="text-[15px] leading-relaxed font-normal">
+                    <p className="text-[15px] p-3 leading-relaxed font-normal">
                         {message.content}
                     </p>
                 );
@@ -30,10 +31,11 @@ const MessageBubble = ({ message, selectedUser, currentUserId }) => {
                 );
             case 'voice':
                 return (
-                    <div className="rounded-xl overflow-hidden bg-black/5">
-                        <audio controls className="w-full h-10">
-                            <source src={message.voice} type="audio/mpeg" />
-                        </audio>
+                    <div>
+                        <VoicePlayer 
+                            audioSrc={ BASE_URL_IMG+message.voice} 
+                            isSentByCurrentUser={isSentByCurrentUser}
+                        />
                     </div>
                 );
             default:
@@ -45,7 +47,7 @@ const MessageBubble = ({ message, selectedUser, currentUserId }) => {
         <div className={`flex items-start gap-2 mb-6 ${isSentByCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
             <div className="relative flex-shrink-0">
                 <img
-                    src={isSentByCurrentUser ?  selectedUser.avatar :currentUserAvatar }
+                    src={isSentByCurrentUser ? selectedUser.avatar : currentUserAvatar}
                     alt={`${isSentByCurrentUser ? 'Your' : 'User'} avatar`}
                     className="w-6 h-6 rounded-full mb-1"
                 />
@@ -53,7 +55,7 @@ const MessageBubble = ({ message, selectedUser, currentUserId }) => {
             <div className="relative max-w-[85%] md:max-w-[70%]">
                 <div
                     className={`
-                        relative p-3 
+                        relative
                         ${isSentByCurrentUser ? 
                             'bg-gradient-to-br from-indigo-500 via-blue-600 to-blue-700 text-white rounded-t-2xl rounded-bl-2xl rounded-br-sm' : 
                             'bg-gray-100 text-gray-800 rounded-t-2xl rounded-br-2xl rounded-bl-sm'

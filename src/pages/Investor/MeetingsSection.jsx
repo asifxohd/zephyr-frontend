@@ -1,8 +1,9 @@
 import React from 'react'
+import ScheduleMeetings from '@/src/components/Common/ScheduleMeetings'
 
 const MeetingsSection = () => {
   return (
-    <div>MeetingsSection</div>
+   <ScheduleMeetings/>
   )
 }
 

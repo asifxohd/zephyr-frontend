@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Home,
   Users,
@@ -12,11 +12,16 @@ import {
 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../Common/UserContext";
+import { BASE_URL_IMG } from "@/src/constents";
+
 
 const Sidebar = () => {
   const [selected, setSelected] = useState("home");
   const [isExpanded, setIsExpanded] = useState(true);
   const [isHovering, setIsHovering] = useState("");
+  const {userInformations} = useContext(UserContext)
+
 const navigate = useNavigate()
   const menuItems = [
     {
@@ -85,7 +90,6 @@ const navigate = useNavigate()
           <div className="flex items-center gap-3">
             <div className="relative">
               <div className="absolute -inset-1 bg-blue-50 rounded-lg blur-sm opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative flex items-center justify-center w-10 h-10 bg-blue-50 rounded-xl ring-1 ring-gray-100"></div>
             </div>
             {isExpanded && (
               <span className="text-lg font-semibold text-gray-900"></span>
@@ -172,18 +176,18 @@ const navigate = useNavigate()
             <div onClick={()=> navigate('profile')} className="flex items-center gap-3">
               <div className="relative group">
                 <div className="absolute -inset-1 bg-blue-100/50 rounded-full blur-sm opacity-50 group-hover:opacity-100 transition duration-500"></div>
-                <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-white">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ">
                   <div className="w-full h-full bg-blue-50 flex items-center justify-center">
-                    <User className="w-6 h-6 text-blue-500" />
+                    <img className="w-7 bg-cover h-7" src={userInformations.avatar_image? BASE_URL_IMG+userInformations.avatar_image:"https://media.istockphoto.com/id/610003972/vector/vector-businessman-black-silhouette-isolated.jpg?s=612x612&w=0&k=20&c=Iu6j0zFZBkswfq8VLVW8XmTLLxTLM63bfvI6uXdkacM="} alt="" />
                   </div>
                 </div>
               </div>
               {isExpanded && (
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-700">
-                    Alex Johnson
+                  <p className="text-xs font-medium text-gray-700">
+                    {userInformations.name ? userInformations.name : "No Name"}
                   </p>
-                  <p className="text-xs text-gray-400">Premium User</p>
+                  {/* <p className="text-xs text-gray-400">Premium User</p> */}
                 </div>
               )}
             </div>
@@ -199,14 +203,17 @@ const navigate = useNavigate()
       {/* Mobile Bottom Navigation */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 z-50">
         <nav className="flex justify-around items-center h-16 px-4">
-          {menuItems.slice(0, 5).map((item) => {
+          {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = selected === item.id;
 
             return (
               <button
                 key={item.id}
-                onClick={() => handleSelect(item.id)}
+                onClick={() => {
+                  handleSelect(item.id);
+                  navigate(item.link);
+                }}
                 className="relative group flex flex-col items-center justify-center"
               >
                 <div

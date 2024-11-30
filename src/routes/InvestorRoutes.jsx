@@ -18,6 +18,7 @@ import InvestersView from '../pages/Investor/InvestersView';
 import ViewBusiness from '../pages/Business/ViewBusiness';
 import ViewInvestorProfile from '../pages/Business/ViewInvestrosProfile';
 import UserProfile from '../pages/Common/UserProfile';
+import { UserProvider } from '../components/Common/UserContext';
 
 const InvestorRoutes = () => {
   return (

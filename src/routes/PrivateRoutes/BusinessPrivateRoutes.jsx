@@ -1,5 +1,6 @@
 import React from 'react'
 import { Navigate,Outlet } from 'react-router-dom';
+import { UserProvider } from '@/src/components/Common/UserContext';
 
 const BusinessPrivateRoutes = () => {
   const decodedTokenString = localStorage.getItem('decodedToken');
@@ -8,7 +9,7 @@ const BusinessPrivateRoutes = () => {
         const decodedToken = JSON.parse(decodedTokenString);
 
         if (decodedToken && decodedToken.role === 'business') {
-            return <Outlet />;
+            return <UserProvider><Outlet /></UserProvider> ;
         } else {
             return <Navigate to="/business/login" replace />;
         }

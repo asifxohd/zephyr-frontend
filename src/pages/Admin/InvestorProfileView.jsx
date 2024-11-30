@@ -44,7 +44,7 @@ const InvestorProfile = () => {
                 {/* Avatar */}
                 <div className="absolute -top-28 left-6">
                     <img
-                        src={investorInfo?.investor_preferences?.avatar_image ? investorInfo.investor_preferences.avatar_image : ""}
+                        src={investorInfo?.investor_preferences?.avatar_image ? investorInfo.investor_preferences.avatar_image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgs2DOOnn9pY67TodjACV0st9VwO1Q-ZdxOA&s"}
                         alt={investorInfo.full_name}
                         className="w-40 h-40 border-4 border-white shadow-lg"
                     />

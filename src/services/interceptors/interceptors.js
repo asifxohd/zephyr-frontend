@@ -33,9 +33,7 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         console.log("Refresh token is invalid. Logging out...");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/";
+        localStorage.clear()
         return Promise.reject(refreshError);
       }
     }

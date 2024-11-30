@@ -6,23 +6,22 @@ const useCustomNavigationForAuthenticatedUser = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    
-
     try {
-      const decodedToken = jwtDecode(token);
+      const decodedToken = localStorage.getItem('decodedToken');
+      const tokenObject = JSON.parse(decodedToken);
 
-      if (decodedToken.role === 'admin') {
+      
+      if (tokenObject.role === 'admin') {
         navigate('/admin');
-      } else if (decodedToken.role === 'investor') {
+      } else if (tokenObject.role === 'investor') {
         navigate('/investor');
-      } else if (decodedToken.role === 'business') {
+      } else if (tokenObject.role === 'business') {
         navigate('/business');
       } else { 
         navigate('/');
       }
     } catch (error) {
-      console.error('Invalid token:', error);
+      console.error('No token', error);
       navigate('');
     }
   }, [navigate]);

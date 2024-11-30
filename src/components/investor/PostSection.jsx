@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useContext } from 'react';
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Heart,
     MessageCircle,
-    Share2,
     MoreHorizontal,
     Send,
-    Bookmark,
     Camera,
     Image as ImageIcon,
     Smile,
@@ -24,6 +22,7 @@ import useCurrentUser from '@/src/hooks/useCurrentUser';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../spinner/Spinner';
 import RefereshSpinner from '../Other/ReloadSpinner';
+import { UserContext } from '../Common/UserContext';
 
 const NoPosts = () => (
     <Card className="border-0 rounded-sm transition-all duration-300 overflow-hidden bg-white">
@@ -49,27 +48,77 @@ const AdvancedPostCard = () => {
     const [showComments, setShowComments] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [posts, setPosts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingRefresh, setIsLoadingRefresh] = useState(false);
     const [change, setChange] = useState(false);
     const [com, setCom] = useState('')
-    const authUser = useCurrentUser()
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const {userInformations} = useContext(UserContext)
 
+    const observer = useRef();
+    const authUser = useCurrentUser()
     const navigate = useNavigate()
-    
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setIsLoading(true);
-                const response = await getPosts();
-                setPosts(response);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setIsLoading(false);
+
+    const lastPostElementRef = useCallback(node => {
+        if (isLoadingMore) return;
+        if (observer.current) observer.current.disconnect();
+        
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setCurrentPage(prevPage => prevPage + 1);
             }
+        }, {
+            rootMargin: '200px' 
+        });
+
+        if (node) observer.current.observe(node);
+    }, [isLoadingMore, hasMore]);
+
+
+    const fetchPosts = useCallback(async (page) => {
+        
+        if (!hasMore) return;
+
+        try {
+            setIsLoadingRefresh(!isLoadingRefresh)
+            const response = await getPosts(page);
+            console.log();
+            
+            if (response.results.length === 0) {
+                setHasMore(false);
+                return;
+            }
+
+            setPosts(prevPosts => [...prevPosts, ...response.results]);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }finally{
+            setIsLoadingRefresh(!isLoadingRefresh)
+            setIsLoadingMore(false);
+
         }
-        fetchData();
-    }, [change]);
+    }, [hasMore, isLoadingRefresh]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
+            
+            if (hasMore ) {
+                setCurrentPage(prevPage => prevPage + 1);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [hasMore]);
+
+
+    useEffect(() => {
+        fetchPosts(currentPage);
+    }, [currentPage]);
+
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -164,14 +213,12 @@ const AdvancedPostCard = () => {
     return (
         <div className="w-full max-w-2xl mx-auto space-y-2">
             {/* Create Post Section */}
-            <div className='flex justify-center'>
-                <div className=""><RefereshSpinner setter={setPosts} /></div>
-            </div>
+            
             <Card className="bg-white rounded-sm border-0 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="p-4 md:p-6">
                     <div className="flex items-center gap-4">
                         <Avatar className="w-10 h-10 md:w-12 md:h-12 border-2 border-blue-100">
-                            <AvatarImage src="/api/placeholder/48/48" alt="User Profile" />
+                            <img src={BASE_URL_IMG+userInformations.avatar_image} alt="User Profile" />
                             <AvatarFallback className="bg-blue-50 text-blue-600">US</AvatarFallback>
                         </Avatar>
 
@@ -210,7 +257,7 @@ const AdvancedPostCard = () => {
                     </div>
                 </div>
             </Card>
-
+            
             {isModalOpen && (
                 <PostModal isOpen={isModalOpen} onClose={onCloseModal} onUpdate={() => setChange(!change)} />
             )}
@@ -236,15 +283,18 @@ const AdvancedPostCard = () => {
             {!isLoading && posts.length === 0 && <NoPosts />}
 
             {/* Posts List */}
-            {!isLoading && posts.map((post) => (
+            {!isLoading && posts.map((post, index) => (
                 
                 
-                <Card key={post.id} className="border-0 rounded-sm transition-all duration-300 overflow-hidden bg-white">
+                <Card 
+                    key={post.id}
+                    ref={index === posts.length - 1 ? lastPostElementRef : null}
+                    className="border-0 rounded-sm transition-all duration-300 overflow-hidden bg-white">
                     <CardHeader className="p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">
-                                <Avatar className="w-12 h-12 ring-4 ring-blue-100">
-                                    <AvatarImage src={post.user.image ? BASE_URL_IMG + post.user.image : post.user.image} alt={post.user.name} />
+                                <Avatar className="w-12 h-12  ring-4 ring-blue-100">
+                                    <img src={post.user.image ? BASE_URL_IMG + post?.user?.image : post?.user?.image} alt={post.user.name} />
                                     <AvatarFallback>{post.user.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div>

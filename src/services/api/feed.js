@@ -14,9 +14,9 @@ export const handlePostUpload = async (formData) => {
 }
 
 
-export const getPosts = async () => {
+export const getPosts = async (page) => {
     try {
-        const response = await axiosInstance.get('api/feed/posts/')
+        const response = await axiosInstance.get(`api/feed/posts/?page=${page}`)
         return response.data
     } catch (error) {
         throw error

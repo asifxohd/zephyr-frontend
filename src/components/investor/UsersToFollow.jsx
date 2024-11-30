@@ -55,7 +55,7 @@ const UsersToFollow = () => {
 						const isFollowing = followStatus[user.id] || false; 
 
 						return (
-							<li onClick={() => handleNavigateToProfile(user)} key={user.email} className="flex cursor-pointer items-center gap-4 p-2 hover:bg-gray-100 rounded-lg transition-all duration-200">
+							<li key={user.email} className="flex cursor-pointer items-center gap-4 p-2 hover:bg-gray-100 rounded-lg transition-all duration-200">
 								<div className="relative h-12 w-12">
 									<img
 										src={user.avatar_image ? BASE_URL_IMG + user.avatar_image : ''}
@@ -69,7 +69,7 @@ const UsersToFollow = () => {
 									)}
 								</div>
 
-								<div className="flex-1 min-w-0">
+								<div onClick={() => handleNavigateToProfile(user)}  className="flex-1 min-w-0">
 									<p className="font-medium text-sm text-gray-900 truncate">{user.name}</p>
 									<p className="text-sm text-gray-500 truncate">{user.email.split('@')[0]}</p>
 								</div>

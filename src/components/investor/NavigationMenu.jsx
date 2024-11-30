@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Card } from '@/components/ui/card';
 import { 
   Home,
@@ -14,12 +14,16 @@ import {
   Image
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; 
+import { UserContext } from '../Common/UserContext';
+import { BASE_URL_IMG } from '@/src/constents';
 
 const ModernNavigationMenu = ({ children }) => {
   const navigate = useNavigate();
   const [isMinimized, setIsMinimized] = useState(false);
   const [activeNav, setActiveNav] = useState('home');
   const [isMobile, setIsMobile] = useState(false);
+
+  const {userInformations} = useContext(UserContext)
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,7 +45,7 @@ const ModernNavigationMenu = ({ children }) => {
     { name: 'messages', icon: MessageSquare, label: 'Messages', route: 'messages' },
     { name: 'My Posts', icon: Image, label: 'My Posts', route: 'favourites' },
     { name: 'meetings', icon: Users, label: 'Meetings', route: 'meetings' },
-    { name: 'recordings', icon: Video, label: 'Recordings', route: 'meeting-recordings' },
+    // { name: 'recordings', icon: Video, label: 'Recordings', route: 'meeting-recordings' },
     // { name: 'notifications', icon: Bell, label: 'Notifications', route: 'notifications' },
   ];
 
@@ -95,15 +99,15 @@ const ModernNavigationMenu = ({ children }) => {
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full overflow-hidden">
                 <img
-                  src="https://img.freepik.com/free-vector/hand-drawn-side-profile-cartoon-illustration_23-2150517171.jpg"
+                  src={userInformations.avatar_image ? BASE_URL_IMG+userInformations.avatar_image : "https://media.istockphoto.com/id/610003972/vector/vector-businessman-black-silhouette-isolated.jpg?s=612x612&w=0&k=20&c=Iu6j0zFZBkswfq8VLVW8XmTLLxTLM63bfvI6uXdkacM="}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
               </div>
               {!isMinimized && (
                 <div>
-                  <p className="font-medium">Alex Thompson</p>
-                  <p className="text-sm text-gray-500">Designer</p>
+                  <p className="font-medium">{userInformations.name ? userInformations.name  :"No Name" }</p>
+                  {/* <p className="text-sm text-gray-500">Designer</p> */}
                 </div>
               )}
             </div>
@@ -114,7 +118,7 @@ const ModernNavigationMenu = ({ children }) => {
   );
 
   const MobileNav = () => (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg rounded-t-3xl">
+    <div className="fixed bottom-0 z-10 left-0 right-0 bg-white border-t border-gray-200 shadow-lg rounded-t-3xl">
       <div className="max-w-md mx-auto px-6 py-2">
         <div className="flex justify-around items-center">
           {navItems.slice(0, 5).map((item) => (

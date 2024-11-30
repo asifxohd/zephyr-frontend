@@ -18,7 +18,7 @@ const Home = () => {
       <Navbar />
       <div className="flex xl:px-12 w-full lg:-z-10 flex-grow mt-4 ">
         <NavigationMenu activeNav={activeNav} setActiveNav={setActiveNav} />
-        <div className="w-full pl-5 pt-5 h-screen scrollbar-hide overflow-y-scroll">
+        <div className="w-full  p-5 pt-5 h-screen scrollbar-hide overflow-y-scroll">
           <Outlet />
         </div>
       </div>

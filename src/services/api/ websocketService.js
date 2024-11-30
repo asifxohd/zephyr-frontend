@@ -2,7 +2,7 @@ import { BASE_URL, BASE_URL_WEB_SOCKET } from "@/src/constents";
 
 let socket = null;
 
-export const initializeWebSocket = (userId, onMessageCallback) => {
+export const initializeWebSocket = (userId, onMessageCallback,onStatusUpdateCallback) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
         console.log('WebSocket is already open, skipping re-connection');
         return socket; 
@@ -15,8 +15,6 @@ export const initializeWebSocket = (userId, onMessageCallback) => {
 
     console.log(`Initializing WebSocket connection for user: ${userId}`);
     socket = new WebSocket(`${BASE_URL_WEB_SOCKET}/ws/chat/${userId}/`);
-    console.log(`${BASE_URL_WEB_SOCKET}/ws/chat/${userId}/`);
-    console.log(socket);
     
     // WebSocket open event handler
     socket.onopen = () => {
@@ -25,18 +23,23 @@ export const initializeWebSocket = (userId, onMessageCallback) => {
 
     // WebSocket message event handler
     socket.onmessage = (event) => {
-        console.log(event);
-        
         try {
             const data = JSON.parse(event.data);
+            console.log(data);
+            
             if (data) {
-                if (data) {
-                    console.log('Received message:', data);
-                    onMessageCallback(data); 
-                }
-                if (data.status) {
-                    
+                if (data.type === 'status_update') {
                     console.log(`User status changed: ${data.status}`);
+                    if (onStatusUpdateCallback) {
+                        console.log(data,'this is the data');
+                        
+                        onStatusUpdateCallback(data);
+                    }
+                } else if (data.content_type == 'text') {
+                    console.log('Received message:', data);
+                    onMessageCallback(data);
+                } else if (data.content_type == 'voice'){
+                    console.log("kittyy ")
                 }
             } else {
                 console.warn('Received empty or invalid data:', event.data);
@@ -49,8 +52,9 @@ export const initializeWebSocket = (userId, onMessageCallback) => {
     // WebSocket close event handler
     socket.onclose = (event) => {
         console.log('WebSocket connection closed', event.code, event.reason);
-        if (event.code !== 1000) { // Code 1000 indicates normal closure
+        if (event.code !== 1000) { 
             console.error(`WebSocket closed unexpectedly: ${event.reason}`);
+            // Optional: Implement reconnection logic here
         }
     };
 
@@ -63,20 +67,15 @@ export const initializeWebSocket = (userId, onMessageCallback) => {
 };
 
 export const sendMessage = (message) => {
-    console.log(socket);
-    
-    if (socket) {
-        if (socket.readyState === WebSocket.OPEN) {
-            console.log('Sending message:', message);
-            socket.send(JSON.stringify(message));
-        } else {
-            console.error('WebSocket is not open, cannot send message');
-            console.log('Current WebSocket readyState:', socket.readyState);
-        }
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        console.log('Sending message:', message);
+        socket.send(JSON.stringify(message));
     } else {
-        console.error('WebSocket is not initialized');
+        console.error('WebSocket is not open, cannot send message');
+        console.log('Current WebSocket readyState:', socket?.readyState);
     }
 };
+
 
 export const closeWebSocket = () => {
     if (socket) {
@@ -90,3 +89,5 @@ export const closeWebSocket = () => {
         console.log('No WebSocket connection to close');
     }
 };
+
+export const getWebSocketInstance = () => socket;

@@ -51,6 +51,7 @@ const Home = () => {
     if (!isSubscribed) {
         return <Subscription />; 
     }
+    
 
     return (
         <div className="lg:fixed flex flex-col min-h-screen w-full bg-gray-100">

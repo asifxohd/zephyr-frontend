@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Search, Users, UserPlus, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ReactDOM from 'react-dom';
-import { BASE_URL } from '@/src/constents';
+import { BASE_URL, BASE_URL_IMG } from '@/src/constents';
 
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -67,7 +67,7 @@ const FollowStats = ({ followers, following }) => {
               className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg transition-colors"
             >
               <img
-                src={user.avatar_image ? BASE_URL + user.avatar_image : 'https://thumbs.dreamstime.com/b/icon-profile-color-green-icon-profile-color-green-circle-color-dark-green-background-color-white-194702090.jpg'}
+                src={user.avatar_image ? BASE_URL_IMG + user.avatar_image : 'https://thumbs.dreamstime.com/b/icon-profile-color-green-icon-profile-color-green-circle-color-dark-green-background-color-white-194702090.jpg'}
                 alt={user.email}
                 className="w-10 h-10 rounded-full object-cover border border-gray-100"
               />
@@ -125,3 +125,4 @@ const FollowStats = ({ followers, following }) => {
 };
 
 export default FollowStats;
+ 

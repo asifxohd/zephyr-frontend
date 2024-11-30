@@ -2,6 +2,7 @@
 import React from 'react';
 
 const UserListItem = ({ user, selectedUser, handleUserSelect }) => {
+    
     return (
         <div
             onClick={() => handleUserSelect(user)}

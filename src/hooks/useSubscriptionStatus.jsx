@@ -9,7 +9,7 @@ const useSubscriptionStatus = ()=> {
         const fetchSubscriptionStatus = async ()=> {
             try {
                 const response = await axiosInstance.get('api/check-subscription/')
-                // console.log(response.data);
+                console.log(response.data);
                 setIsSubscribed(response.data.isSubscribed)
                 setFreeTrialUsed(response.data.freeTrialUsed)
             } catch (error) {
